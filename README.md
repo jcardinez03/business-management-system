@@ -1,18 +1,212 @@
-# React + Vite
+Business Management System (BMS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern Business Management System built with React and Laravel. This project aims to provide businesses with a secure, scalable, and user-friendly platform to manage daily operations from a single dashboard.
 
-Currently, two official plugins are available:
+«Status: 🚧 In Development»
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+Frontend
 
-Note: This will impact Vite dev & build performances.
+- React
+- Vite
+- Tailwind CSS
 
-## Expanding the ESLint configuration
+Backend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Laravel
+- REST API
+- MySQL
+
+Tools
+
+- Git & GitHub
+- Figma
+- Postman
+
+---
+
+Project Goals
+
+- Learn full-stack web development using React and Laravel
+- Build production-ready REST APIs
+- Practice secure authentication and authorization
+- Follow clean architecture and coding standards
+- Create a portfolio-quality SaaS application
+
+---
+
+Planned Features
+
+Authentication
+
+- User Registration
+- User Login
+- Logout
+- Forgot Password
+- Email Verification
+- Role-Based Access Control (RBAC)
+
+Dashboard
+
+- Business Overview
+- Statistics
+- Revenue Summary
+- Recent Activities
+
+User Management
+
+- Create Users
+- Update Users
+- Delete Users
+- Assign Roles
+- Permissions
+
+Inventory Management
+
+- Product Management
+- Categories
+- Stock Tracking
+- Low Stock Alerts
+
+Sales
+
+- Sales Transactions
+- Invoice Generation
+- Sales History
+
+Customers
+
+- Customer Records
+- Purchase History
+
+Reports
+
+- Sales Reports
+- Inventory Reports
+- Export to PDF
+- Export to Excel
+
+Settings
+
+- Company Information
+- User Preferences
+- Security Settings
+
+---
+
+Learning Objectives
+
+This project is also my learning journey in:
+
+- React
+- Laravel API Development
+- Authentication
+- REST APIs
+- Database Design
+- API Security
+- Clean Code
+- Git Workflow
+- Full-Stack Development
+
+---
+
+Project Structure
+
+business-management-system/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── backend/
+│   ├── app/
+│   ├── routes/
+│   ├── database/
+│   └── composer.json
+│
+└── README.md
+
+---
+
+Development Roadmap
+
+Phase 1
+
+- [x] Landing Page
+- [ ] Registration UI
+- [ ] Login UI
+- [ ] Connect React to Laravel API
+- [ ] User Authentication
+
+Phase 2
+
+- [ ] Dashboard
+- [ ] User Management
+- [ ] Role Management
+
+Phase 3
+
+- [ ] Inventory Management
+- [ ] Product CRUD
+- [ ] Categories
+
+Phase 4
+
+- [ ] Sales Module
+- [ ] Customer Module
+- [ ] Reports
+
+Phase 5
+
+- [ ] Notifications
+- [ ] Email Services
+- [ ] Audit Logs
+- [ ] API Documentation
+- [ ] Deployment
+
+---
+
+Version History
+
+v0.1.0
+
+- Initial project setup
+- React + Vite
+- Laravel backend setup
+- Landing page started
+
+---
+
+Security Goals
+
+- Password hashing
+- CSRF protection
+- SQL Injection prevention
+- XSS protection
+- Request validation
+- Authentication using Laravel Sanctum
+- Role-based authorization
+- Secure API communication
+
+---
+
+Future Plans
+
+- Multi-business support
+- Subscription billing
+- Analytics dashboard
+- Mobile-responsive interface
+- Dark mode
+- Real-time notifications
+- File uploads
+- Cloud deployment
+
+---
+
+License
+
+This project is for educational and portfolio purposes.
