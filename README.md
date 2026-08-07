@@ -113,25 +113,6 @@ This project is also my learning journey in:
 
 ---
 
-Project Structure
-
-business-management-system/
-│
-├── frontend/
-│   ├── src/
-│   ├── public/
-│   └── package.json
-│
-├── backend/
-│   ├── app/
-│   ├── routes/
-│   ├── database/
-│   └── composer.json
-│
-└── README.md
-
----
-
 Development Roadmap
 
 Phase 1
