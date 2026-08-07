@@ -55,21 +55,23 @@ export const features = [
 export const Features = () => {
     return (
         <section className="relative overflow-hidden container mx-auto mt-12 px-4">
-            <p className="font-bold text-2xl">Everything you need</p>
-            <div className="grid md:grid-cols-2 flex flex-col md:flex-row gap-4">
-                {features.map((feature) => {
-                    const Icon = feature.icon;
-                    return (
-                        <div key={feature.id} className="w-full border border-secondary/10 p-5 rounded-xl flex gap-4 items-center">
-                            <p><Icon /></p>
-                            <div>
-                                <p className="font-semibold">{feature.title}</p>
-                                <p className="text-xs text-secondary/60">{feature.description}</p>
+            <div className="animate-fade-in animation-delay-800">
+                <p className="font-bold text-2xl">Everything you need</p>
+                <div className="grid md:grid-cols-2 flex flex-col md:flex-row gap-4">
+                    {features.map((feature) => {
+                        const Icon = feature.icon;
+                        return (
+                            <div key={feature.id} className="w-full border border-secondary/10 p-5 rounded-xl flex gap-4 items-center">
+                                <p><Icon /></p>
+                                <div>
+                                    <p className="font-semibold">{feature.title}</p>
+                                    <p className="text-xs text-secondary/60">{feature.description}</p>
+                                </div>
                             </div>
-                        </div>
-                    )
-                }
-                )}
+                        )
+                    }
+                    )}
+                </div>
             </div>
         </section>
     )
