@@ -1,24 +1,15 @@
-import { Navbar } from "@/layout/Navbar";
-import { Hero } from "@/layout/Hero";
-import { Features } from "@/layout/Features";
-import { CTA } from "@/layout/CTA";
-import { Footer } from "@/layout/Footer";
 
+import { Routes, Route } from "react-router-dom";
+import  Landing  from "@/pages/Landing";
+import  Register  from "@/pages/Register";
 
 function App() {
   return (
-    <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
-
-      <main>
-        <Hero />
-        <Features/>
-        <CTA />
-      </main>
-
-      <Footer/>
-    </div>
-  )
+    <Routes>
+      <Route path="/"  element={<Landing/>} />
+      <Route path="/register"  element={<Register/>} />
+    </Routes>
+  ) 
 }
 
 export default App

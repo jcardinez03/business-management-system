@@ -1,6 +1,8 @@
 import { Button } from "@/components/Button";
 import { Menu, X, BriefcaseBusiness } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 const navLinks = [
     { id: "login", href: "#login", label: "Sign In" },
     { id: "get-started", href: "#get-started", label: "Get started" }
@@ -32,17 +34,20 @@ export const Navbar = () => {
 
                 {/* desktop buttons */}
                 <div className="flex items-center gap-1">
-                    {navLinks.map((link, index) => (
-                        link.id !== "get-started" ?
-                        <Button key={link.id} size="sm" color="white" className="font-semibold">
-                            <a href={link.href}>{link.label}</a>
-                        </Button>
-                            :
-                        <Button key={link.id} size="sm" color="blue" className="font-semibold">
-                            <a href={link.href}>{link.label}</a>
-                        </Button>
-                        
-                    ))}
+                    {location.pathname ==="/" && (
+                        navLinks.map((link, index) => 
+                            link.id !== "get-started" ? (
+                            <Button key={link.id} size="sm" color="white" className="font-semibold">
+                                <a href={link.href}>{link.label}</a>
+                            </Button> )
+                                : (
+                            <Link to="/register">
+                                <Button key={link.id} size="sm" color="blue" className="font-semibold">
+                                    <a href={link.href}>{link.label}</a>
+                                </Button>
+                            </Link> )
+                        )
+                    )}
                 </div>
             </nav>
         </header>
