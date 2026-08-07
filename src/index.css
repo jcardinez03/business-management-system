@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Reddit+Mono:wght@200..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: #F8FAFC;
+  --color-foreground: #312a26;
+
+  --color-primary: #2563EB;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #1f2830;
+  --color-secondary-foreground: #20b2a6;
+
+  --color-light: #f2f2f2;
+  --color-light-foreground: #ffffff;
+
+  --color-muted: #252e37;
+  --color-muted-foreground: #7a8491;
+
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  --color-border: #242b32;
+
+  --color-dark: #1F2937;
+  --color-dark-foreground: #1F2937;
+
+  --radius: 0.75rem;
+
+  --color-highlight: #f5a623;
+  --color-surface: #1a2329;
+}
+
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Inter', sans-serif;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  @keyframes fade-in{
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+      filter: blur(10x);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+
+  @keyframes fade-out{
+    from {
+      opacity: 1;
+      /* transform: translateY(-20px); */
+      filter: blur(10x);
+    }
+    to {
+      opacity: 0;
+      /* transform: translateY(0); */
+      filter: blur(0);
+    }
+  }
+  .animate-fade-out {
+    animation: fade-out 0.4s ease-out both;
+  }
+}
