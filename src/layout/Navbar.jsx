@@ -41,9 +41,9 @@ export const Navbar = () => {
                                 <a href={link.href}>{link.label}</a>
                             </Button> )
                                 : (
-                            <Link to="/register">
-                                <Button key={link.id} size="sm" color="blue" className="font-semibold">
-                                    <a href={link.href}>{link.label}</a>
+                            <Link key={link.id} to="/register">
+                                <Button size="sm" color="blue" className="font-semibold">
+                                    {link.label}
                                 </Button>
                             </Link> )
                         )

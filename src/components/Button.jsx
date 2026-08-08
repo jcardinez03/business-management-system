@@ -1,4 +1,4 @@
-export const Button = ({className, size="default", children, color="blue"}) => {
+export const Button = ({className, size="default", children, color="blue", onClick}) => {
     const baseClasses = "relative overflow-hidden rounded-lg shadow-sm";
 
     const sizeClasses = {
@@ -19,7 +19,7 @@ export const Button = ({className, size="default", children, color="blue"}) => {
     // className - additional Tailwind classes passed from <Button>
     return (
         <button className={classes}>
-            <span className="relative flex items-center justify-center gap-2">
+            <span className="relative flex items-center justify-center gap-2" onClick={onClick}>
                 {children}
             </span>
         </button>
