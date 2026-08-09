@@ -118,7 +118,7 @@ Development Roadmap
 Phase 1
 
 - [x] Landing Page
-- [ ] Registration UI
+- [x] Registration UI
 - [ ] Login UI
 - [ ] Connect React to Laravel API
 - [ ] User Authentication
@@ -159,7 +159,10 @@ v0.1.0
 - React + Vite
 - Laravel backend setup
 - Landing page started
-
+v0.2.1
+- Updated Registration flow
+- created UI for Register Business and Register Plan
+- created migration and models for Business and Plan
 ---
 
 Security Goals
