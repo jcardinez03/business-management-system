@@ -1,5 +1,5 @@
-export const Button = ({className, size="default", children, color="blue", onClick}) => {
-    const baseClasses = "relative overflow-hidden rounded-lg shadow-sm";
+export const Button = ({className, size="default", children, color="blue", onClick, disabled}) => {
+    const baseClasses = "relative overflow-hidden rounded-lg shadow-sm hover:bg-blue-800 hover:text-light/50";
 
     const sizeClasses = {
         sm: "px-4 py-1 text-sm",
@@ -18,7 +18,7 @@ export const Button = ({className, size="default", children, color="blue", onCli
     // sizeClasses - Tailwind classes for each button size (sm, default, lg)
     // className - additional Tailwind classes passed from <Button>
     return (
-        <button className={classes}>
+        <button className={classes} disabled={disabled}>
             <span className="relative flex items-center justify-center gap-2" onClick={onClick}>
                 {children}
             </span>

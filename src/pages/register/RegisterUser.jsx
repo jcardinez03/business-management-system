@@ -31,7 +31,7 @@ const register = [
     }
 ]
 
-export const RegisterUser = ({registerForm, setRegisterForm, handleRegisterForm, handleNextStep}) => {
+export const RegisterUser = ({ registerForm, setRegisterForm, handleNextStep, errors }) => {
 
     return (
         <>
@@ -41,34 +41,40 @@ export const RegisterUser = ({registerForm, setRegisterForm, handleRegisterForm,
             </div>
 
             <div className="mt-6 w-full md:max-w-xl mx-auto">
-                    {register.map((field) => {
-                        const Icon = field.icon;
+                {register.map((field) => {
+                    const Icon = field.icon;
 
-                        return (
-                            <div key={field.id} className="mt-4">
-                                <Label htmlFor={field.id}>{field.label}</Label>
-                                <div className="flex flex-row items-center gap-3 shadow py-2 px-4 rounded-lg focus-within:outline focus-within:outline-primary">
-                                    <p><Icon className="text-primary/60" /></p>
-                                    <Input type={field.type}
-                                        placeholder={field.placeholder}
-                                        value={registerForm[field.name]}
-                                        className="h-10 w-full outline-none"
-                                        onChange={(e) => setRegisterForm({
-                                            ...registerForm,
-                                            [field.name]: e.target.value
-                                        })} />
-                                </div>
+                    return (
+                        <div key={field.id} className="mt-4">
+                            <Label htmlFor={field.id}>{field.label}</Label>
+
+                            <Input type={field.type}
+                                placeholder={field.placeholder}
+                                value={registerForm[field.name]}
+                                className="h-10 w-full outline-none"
+                                onChange={(e) => setRegisterForm({
+                                    ...registerForm,
+                                    [field.name]: e.target.value
+                                })} icon={field.icon} />
+
+                            <div className="mt-2">
+                                {errors[field.name] && (
+                                    <p className="fw-bold text-danger animate-fade-in">{errors[field.name]}</p>
+                                )}
                             </div>
-                        )
-                    }
-                    )}
-                    <div className="mt-6">
-                        <Button type="button" className="w-full hover:bg-light hover:outline-1 hover:text-primary" onClick={handleNextStep}>
-                            Continue
-                        </Button>
-                    </div>
+                        </div>
+                    )
+                }
+                )}
+
+
+                <div className="mt-6">
+                    <Button type="button" className="w-full" onClick={handleNextStep}>
+                        Continue
+                    </Button>
+                </div>
                 <div className="mt-6 text-center">
-                    Already have an account? <Link to="/" className="font-semibold text-primary">Sign in</Link>
+                    Already have an account? <Link to="/login" className="font-semibold text-primary">Sign in</Link>
                 </div>
             </div>
         </>

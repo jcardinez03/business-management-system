@@ -42,9 +42,11 @@ export const Navbar = () => {
                     {location.pathname === "/" && (
                         navLinks.map((link, index) =>
                             link.id !== "get-started" ? (
-                                <Button key={link.id} size="sm" color="white" className="font-semibold">
-                                    <a href={link.href}>{link.label}</a>
-                                </Button>)
+                                <Link key={link.id} to="/login">
+                                    <Button key={link.id} size="sm" color="white" className="font-semibold">
+                                        {link.label}
+                                    </Button>
+                                </Link>)
                                 : (
                                     <Link key={link.id} to="/register">
                                         <Button size="sm" color="blue" className="font-semibold">
