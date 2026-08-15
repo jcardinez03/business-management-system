@@ -29,7 +29,7 @@ export const Navbar = () => {
             <nav className="container mx-auto px-6 flex items-center justify-between">
 
                 <Link to="/" className="flex items-center gap-3">
-                    {location.pathname !== '/' && (
+                    {location.pathname === '/register' && (
                         <ChevronLeft className="shadow-md rounded-full" size={25} />
                     )}
                     <h1 className="flex items-center gap-3 text-dark"><BriefcaseBusiness /> BizWise</h1>

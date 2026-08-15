@@ -47,6 +47,10 @@
   button {
     cursor: pointer;
   }
+
+  * {
+    box-sizing: border-box;
+  }
 }
 
 @layer utilities {
@@ -54,7 +58,7 @@
     from {
       opacity: 0;
       transform: translateY(-20px);
-      filter: blur(10x);
+      filter: blur(10px);
     }
 
     to {
@@ -62,6 +66,47 @@
       transform: translateY(0);
       filter: blur(0);
     }
+  }
+
+  @keyframes right-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+      filter: blur(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+      filter: blur(0);
+    }
+  }
+
+   @keyframes right-fade-out {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+      filter: blur(10px);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateX(20px);
+      filter: blur(0);
+    }
+  }
+
+  .animate-right-fade-in {
+    animation: right-fade-in 0.2s ease-out both;
+  }
+
+  .animate-right-fade-out {
+    animation: right-fade-out 0.2s ease-out both;
+  }
+  .glass {
+    background-color: color-mix(in srgb, var(--color-dark) 90%, transparent);
+    backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in srgb, var(--color-light)50%, transparent)
   }
 
   .animate-fade-in {
