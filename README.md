@@ -119,13 +119,13 @@ Phase 1
 
 - [x] Landing Page
 - [x] Registration UI
-- [ ] Login UI
-- [ ] Connect React to Laravel API
-- [ ] User Authentication
+- [x] Login UI
+- [x] Connect React to Laravel API
+- [x] User Authentication
 
 Phase 2
 
-- [ ] Dashboard
+- [x] Dashboard
 - [ ] User Management
 - [ ] Role Management
 
@@ -163,6 +163,9 @@ v0.2.1
 - Updated Registration flow
 - created UI for Register Business and Register Plan
 - created migration and models for Business and Plan
+v0.4.2
+- Responsive Dashboard UI
+- Modal for Add Products + validation
 ---
 
 Security Goals
