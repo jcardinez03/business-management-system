@@ -166,6 +166,9 @@ v0.2.1
 v0.4.2
 - Responsive Dashboard UI
 - Modal for Add Products + validation
+v0.5.2
+- Added Categories in Business Navbar
+- Categories add button is now functional and users can add categories for their business
 ---
 
 Security Goals
