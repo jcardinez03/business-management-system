@@ -31,14 +31,28 @@ export const Register = () => {
     const handleRegisterForm = async (e) => {
         e.preventDefault();
 
-        if(!validateForm()){
+        if (!validateForm()) {
             return;
         }
 
+        await fetch('http://localhost:8000/sanctum/csrf-cookie', {
+            credentials: 'include'
+        });
+
+
+        const xsrfToken = decodeURIComponent(
+            document.cookie
+                .split("; ")
+                .find(row => row.startsWith("XSRF-TOKEN="))
+                ?.split("=")[1] || ""
+        );
+
         const response = await fetch("http://localhost:8000/api/register", {
             method: "POST",
+            credentials:"include",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-XSRF-TOKEN": xsrfToken
             },
             body: JSON.stringify(registerForm)
         });
@@ -69,7 +83,7 @@ export const Register = () => {
         setCurrentStep((prev) => prev - 1);
     }
 
-// BUSINESS TYPES
+    // BUSINESS TYPES
     const [businessTypes, setBusinessTypes] = useState([])
 
     const getBusinessTypes = async () => {
@@ -82,10 +96,8 @@ export const Register = () => {
     useEffect(() => {
         getBusinessTypes();
     }, []);
-    console.log(registerForm)
-
     // ERROR
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState({});
 
     const validateForm = () => {
         let valid = true
@@ -144,10 +156,10 @@ export const Register = () => {
 
 
         if (currentStep === 3) {
-            if (registerForm.plan === "") {
+            if (registerForm.plan_id === "") {
                 setErrors((prev) => ({
                     ...prev,
-                    plan: "Please choose a plan",
+                    plan_id: "Please choose a plan",
                 }))
                 valid = false
             }
@@ -182,8 +194,8 @@ export const Register = () => {
                         handleRegisterForm={handleRegisterForm}
                         handleNextStep={handleNextStep}
                         handleBackStep={handleBackStep}
-                        errors={errors} 
-                        message={message}/>
+                        errors={errors}
+                        message={message} />
                 )
                 }
             </div>

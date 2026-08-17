@@ -26,7 +26,10 @@ const plans = [
 
 export const RegisterPlan = ({ handleRegisterForm, registerForm, setRegisterForm, errors, message }) => {
     const [isChecked, setIsChecked] = useState(false);
-    console.log(isChecked);
+    console.log("RegisterPlan props:", {
+    registerForm,
+    errors,
+});
 
     const handleIsChecked = () => {
         setIsChecked((prev) => (!prev));
@@ -43,15 +46,17 @@ export const RegisterPlan = ({ handleRegisterForm, registerForm, setRegisterForm
 
                 <div className="mx-auto mt-6 flex flex-col justify-center gap-3">
                     {plans.map((plan) =>
-                        <button className="border border-black/30 flex flex-row items-center rounded-xl h-35 md:h-25 px-6 py-0 focus:outline outline-primary text-start"
+                        <button className={` flex flex-row items-center rounded-xl h-35 md:h-25 px-6 py-0  text-start ${registerForm.plan_id === plan.id ?
+                            "bg-light text-primary outline outline-primary":"focus:outline outline-primary border border-black/30"
+                        }`}
                             onClick={() => setRegisterForm({
                                 ...registerForm,
                                 plan_id: plan.id
                             })}
-                            key={plan.id}>
+                            key={plan.id} type="button">
                             <div className="flex-2">
-                                <p className="font-bold text-xl">{plan.name}</p>
-                                <p className="text-xs text-secondary/60">{plan.description}</p>
+                                <p className="font-bold text-2xl">{plan.name}</p>
+                                <p className="text-sm text-secondary/60">{plan.description}</p>
                             </div>
                             <div className="flex-1">
                                 <p className="text-end text-xl md:text-xl font-bold">
@@ -63,9 +68,9 @@ export const RegisterPlan = ({ handleRegisterForm, registerForm, setRegisterForm
                             </div>
                         </button>
                     )}
-                    {errors.plan && 
-                        <p className="fw-bold text-danger animate-fade-in">{errors.plan}</p>
-                        }
+                    {errors?.plan_id &&
+                        <p className="fw-bold text-danger animate-fade-in">{errors.plan_id}</p>
+                    }
                 </div>
                 <div className="mt-6 flex flex-row gap-3 items-center">
                     <Checkbox className="w-4 h-4 rounded border-gray-300 shadow-sm checked:bg-blue-500 checked:border-blue-500 focus:ring-2 focus:ring-blue-300" onChange={(e) => setIsChecked(e.target.checked)} />

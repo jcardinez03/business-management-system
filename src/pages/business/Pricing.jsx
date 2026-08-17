@@ -1,37 +1,17 @@
-import { DashboardNavbar } from "./dashboard/DashboardNavbar"
+import { BusinessNavbar } from "./BusinessNavbar"
 import { Button } from "@/components/Button";
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getXSRFToken } from "../functions/csrf";
+import { getCategories, getBusiness } from "../functions/getters";
+import { useOutletContext } from "react-router-dom";
 
-const categories = [
-    {
-        id: 1,
-        name: 'All',
-    },
-    {
-        id: 2,
-        name: 'Electronics',
-    },
-    {
-        id: 3,
-        name: 'Audio',
-    },
-    {
-        id: 4,
-        name: 'Furniture',
-    },
-    {
-        id: 5,
-        name: 'Accessories',
-    },
-    {
-        id: 6,
-        name: 'Snacks'
-    }
-];
+
 const tables = ['PRODUCT', 'COST', 'PRICE', 'MARGIN', 'VS COMP', 'ACTIVE'];
 export const Pricing = () => {
-
+    const { id } = useParams();
+    const { business, categories } = useOutletContext();
     const [productForm, setProductForm] = useState({
         name: "",
         SKU: "",
@@ -44,7 +24,8 @@ export const Pricing = () => {
     const [isCustomSKUChecked, setIsCustomSKUChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errors, setErrors] = useState([]);
-
+    const [message, setMessage] = useState("")
+    const navigate = useNavigate();
 
     const handleIsCustomSKUChecked = () => {
         setIsCustomSKUChecked((prev) => !prev);
@@ -53,7 +34,8 @@ export const Pricing = () => {
         setIsModalOpen((prev) => !prev);
     }
 
-    // Product
+
+    // insert Product
     const handleProductForm = async (e) => {
         e.preventDefault();
 
@@ -61,21 +43,33 @@ export const Pricing = () => {
             return;
         }
 
-        const response = await fetch('http://localhost:0000/api/products/store', {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(productForm)
-        })
+        try {
+            await fetch('http://localhost:8000/sanctum/csrf-cookie', {
+                credentials: 'include'
+            });
 
-        const data = await response.json();
+            const xsrfToken = getXSRFToken();
 
-        setMessage(data.message);
+            const response = await fetch(`http://localhost:8000/api/products/${id}/store`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-type": "application/json",
+                    "X-XSRF-TOKEN": xsrfToken
+                },
+                body: JSON.stringify(productForm)
+            })
 
-        setTimeout(() => {
-            navigate('/pricing');
-        }, 1000);
+            const data = await response.json();
+
+            setMessage(data.message);
+
+            setIsModalOpen(false);
+
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 
     const validateForm = () => {
@@ -116,13 +110,9 @@ export const Pricing = () => {
     }
     return (
         <div className="flex flex-col md:flex-row items-center min-h-screen w-full overflow-x-hidden relative">
-            <div className="w-full md:w-64">
-                <DashboardNavbar />
-            </div>
-
             <div className="flex-1 min-h-screen w-full min-w-0">
                 <div className="p-5">
-                    <h2 className="text-2xl">[Business Name] - Pricing</h2>
+                    <h2 className="text-2xl"><span className="font-bold">{business.name}</span> - Pricing</h2>
                     <div className="flex items-center">
                         <p className="text-xs">Set and optimize product pricing strategies</p>
                         <Button size="sm" className="flex ml-auto pe-5" onClick={handleIsModalOpen}>
@@ -219,13 +209,18 @@ export const Pricing = () => {
                                     <p className="text-danger animate-fade-in">{errors.name}</p>
                                 }
                             </div>
-                            <div className="grid md:grid-cols-2 gap-2 mx-6 mt-4">
+                            <div className="mx-6 mt-4">
                                 <div className="flex flex-col gap-3 mb-1">
                                     <label htmlFor="SKU" className="font-semibold text-xs text-secondary">SKU</label>
                                     <input type="text" placeholder="eg. LAP-X1-001" className="outline outline-black/30 rounded-sm  h-8 py-1 px-4 disabled:bg-gray-300" onChange={(e) => setProductForm({
                                         ...productForm,
                                         SKU: e.target.value
                                     })} disabled={isCustomSKUChecked === false} />
+                                </div>
+                                <div className="mx-6 flex flex-row gap-2 items-center">
+                                    <input type="checkbox" onClick={handleIsCustomSKUChecked} className="cursor-pointer" />
+                                    <label htmlFor="custom-sku" className="text-secondary/70 text-sm">Custom SKU</label>
+
                                 </div>
 
                                 <div className="flex flex-col justify-center">
@@ -236,22 +231,14 @@ export const Pricing = () => {
                                     })}>
                                         <option value="" hidden>Select...</option>
                                         {categories.map((category) => (
-                                            category.id > 1 &&
                                             <option key={category.id} value={category.id}>{category.name}</option>
                                         ))}
                                     </select>
-                                </div>
-                            </div>
-                            <div className="flex flex-col md:flex-row mt-2">
-                                <div className="mx-6 flex flex-row gap-2 items-center">
-                                    <input type="checkbox" onClick={handleIsCustomSKUChecked} className="cursor-pointer" />
-                                    <label htmlFor="custom-sku" className="text-secondary/70 text-sm">Custom SKU</label>
-
-                                </div>
-                                <div className="ms-31">
-                                    {errors.category_id &&
-                                        <p className="text-danger animate-fade-in">{errors.category_id}</p>
-                                    }
+                                    <div className="">
+                                        {errors.category_id &&
+                                            <p className="text-danger animate-fade-in">{errors.category_id}</p>
+                                        }
+                                    </div>
                                 </div>
                             </div>
 
@@ -287,10 +274,13 @@ export const Pricing = () => {
                             </div>
 
                             <div className="mx-6 my-6 flex flex-col md:flex-row gap-2">
-                                <Button size="sm" className="w-full">Add Product</Button>
+                                <Button size="sm" type="submit" className="w-full">Add Product</Button>
                                 <button type="button" onClick={handleIsModalOpen} className="outline outline-secondary/70 rounded-lg py-1 px-3 hover:bg-secondary/70 hover:text-light">Cancel</button>
                             </div>
                         </form>
+                        <div className="mx-6">
+                            <p className="text-danger">{message}</p>
+                        </div>
                     </div>
                 </div>
             }

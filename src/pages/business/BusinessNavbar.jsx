@@ -1,42 +1,50 @@
-import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users } from "lucide-react";
+import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-const dashboardNav = [
+import { NavLink, useParams } from "react-router-dom";
+
+
+
+export const BusinessNavbar = () => {
+    const {id} = useParams();
+
+    const dashboardNav = [
     {
         icon: LayoutGrid,
         title: "Dashboard",
-        link: "/dashboard"
+        link: `/business/${id}/dashboard`
     },
     {
         icon: Box,
         title: "Inventory",
-        link: "/inventory"
+        link: `/business/${id}/inventory`
     },
     {
         icon: Tag,
         title: "Pricing",
-        link: "/pricing"
-
+        link: `/business/${id}/pricing`
     },
     {
         icon: Calculator,
         title: "Cost Calculator",
-        link: "/cost-calculation"
+        link: `/business/${id}/cost-calculation`
     },
     {
         icon: ChartLine,
         title: "Sales",
-        link: "/sales"
+        link: `/business/${id}/sales`
     },
     {
         icon: Users,
         title: "Customers",
-        link: "/customers"
+        link: `/business/${id}/customers`
     },
+    {
+        icon: ListCheck,
+        title:"Categories",
+        link:`/business/${id}/categories`
+    }
 ]
 
-
-export const DashboardNavbar = () => {
     const [isClicked, setIsClicked] = useState(false);
     const [isActive, setIsActive] = useState(false);
 

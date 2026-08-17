@@ -4,7 +4,8 @@ import { Button } from "@/components/Button";
 import { Briefcase, User, Lock } from "lucide-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
 export const Login = () => {
     const [loginForm, setLoginForm] = useState({
         email: "",
@@ -41,23 +42,26 @@ export const Login = () => {
         if (!validateForm()) {
             return;
         }
-        const csrfToken = decodeURIComponent(
-            document.cookie
-                .split('; ')
-                .find(row => row.startsWith('XSRF-TOKEN='))
-                ?.split('=')[1] || ''
-        );
+
+        
 
         await fetch('http://localhost:8000/sanctum/csrf-cookie', {
             credentials: 'include'
         });
+
+        const xsrfToken = decodeURIComponent(
+            document.cookie
+                .split("; ")
+                .find(row => row.startsWith("XSRF-TOKEN="))
+                ?.split("=")[1] || ""
+        );
 
         const response = await fetch('http://localhost:8000/api/login', {
             method: "POST",
             credentials: "include",
             headers: {
                 "Content-type": "application/json",
-                "X-XSRF-TOKEN": csrfToken
+                "X-XSRF-TOKEN": xsrfToken
             },
             body: JSON.stringify(loginForm)
         });
@@ -71,7 +75,7 @@ export const Login = () => {
         setMessage(data.message);
 
         setTimeout(() => {
-            navigate('/');
+            navigate('/index');
         }, 1000);
     }
     return (
@@ -128,7 +132,7 @@ export const Login = () => {
                             </div>
                         </div>
                         <div className="mt-6">
-                            <p className="text-center">Don't have an account? <span className="text-primary">Create one.</span></p>
+                            <p className="text-center">Don't have an account? <Link to="/register" className="text-primary">Create one.</Link></p>
                         </div>
                     </div>
                 </div>

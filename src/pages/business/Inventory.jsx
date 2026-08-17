@@ -1,24 +1,31 @@
-import { DashboardNavbar } from "@/pages/dashboard/DashboardNavbar";
+import { BusinessNavbar } from "@/pages/business/BusinessNavbar";
 import { Button } from "@/components/Button";
 import { Plus, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCategories, getBusiness } from "../functions/getters";
+import { useParams } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
-const categories = ['All', 'Electronics', 'Audio', 'Furniture', 'Accessories', 'Snacks'];
+
+
 const tables = ['PRODUCT', 'STATUS', 'STOCK', 'REORDER AT', 'REORDER QTY', 'UNIT COST', 'STOCK VALUE', 'LOCATION', 'RESTOCKED'];
 export const Inventory = () => {
+    const {business, categories} = useOutletContext();
     const [isClicked, setIsClicked] = useState(false);
+
+
 
     const handleIsClicked = () => {
         setIsClicked((prev) => !prev);
     }
+
+
     return (
         <div className="flex flex-col md:flex-row items-center min-h-screen w-full overflow-x-hidden">
-            <div className="w-full md:w-64">
-                <DashboardNavbar />
-            </div>
+           
             <div className="flex-1 min-h-screen w-full min-w-0">
                 <div className="p-5">
-                    <h2 className="text-2xl">[Business Name] - Inventory</h2>
+                    <h2 className="text-2xl"><span className="font-bold">{business.name}</span> - Inventory</h2>
                     <div className="flex items-center">
                         <p className="text-xs">Track stock levels, reorder points, and warehouse locations</p>
                         <Button size="sm" className="flex ml-auto pe-5">
@@ -103,5 +110,3 @@ export const Inventory = () => {
         </div>
     )
 }
-
-export default Inventory;
