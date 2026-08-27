@@ -124,8 +124,8 @@ Phase 1
 - [x] User Authentication
 
 Phase 2
-
-- [x] Dashboard
+- [x] Pricing
+- [ ] Dashboard
 - [ ] User Management
 - [ ] Role Management
 
@@ -169,6 +169,9 @@ v0.4.2
 v0.5.2
 - Added Categories in Business Navbar
 - Categories add button is now functional and users can add categories for their business
+-  v0.6.
+- Added Pricing
+- users can no see pricing add and delete product
 ---
 
 Security Goals
