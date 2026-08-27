@@ -10,7 +10,7 @@ import { useOutletContext } from "react-router-dom";
 
 const tables = ['PRODUCT', 'STATUS', 'STOCK', 'REORDER AT', 'REORDER QTY', 'UNIT COST', 'STOCK VALUE', 'LOCATION', 'RESTOCKED'];
 export const Inventory = () => {
-    const {business, categories} = useOutletContext();
+    const { business, categories } = useOutletContext();
     const [isClicked, setIsClicked] = useState(false);
 
 
@@ -22,7 +22,7 @@ export const Inventory = () => {
 
     return (
         <div className="flex flex-col md:flex-row items-center min-h-screen w-full overflow-x-hidden">
-           
+
             <div className="flex-1 min-h-screen w-full min-w-0">
                 <div className="p-5">
                     <h2 className="text-2xl"><span className="font-bold">{business.name}</span> - Inventory</h2>
@@ -58,7 +58,7 @@ export const Inventory = () => {
                         </div>
                         <div className="flex md:flex-row items-center">
                             {categories.map((category, idx) =>
-                                <div key={idx} className={idx >= 0 ? "hidden md:block rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer" : "md:hidden rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70"}>{category}</div>
+                                <div key={idx} className={idx >= 0 ? "hidden md:block rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer" : "md:hidden rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70"}>{category.name}</div>
                             )}
                             <div className="md:hidden rounded-md bg-dark/10 px-1 py-0 w-fit mx-2 text-xs text-dark/70 text-center flex items-center" onClick={handleIsClicked}>Show categories <ChevronDown size={15} /></div>
                             {/* mobile menu */}
@@ -81,18 +81,33 @@ export const Inventory = () => {
                     }
                 </div>
                 <div className="mx-5 border border-t-0 border-black/10">
-                    <table className="hidden md:table w-full bg-light">
-                        <tr>
-                            <th>PRODUCT</th>
-                            <th>STATUS</th>
-                            <th>STOCK</th>
-                            <th>REORDER AT</th>
-                            <th>REORDER QTY</th>
-                            <th>UNIT COST</th>
-                            <th>STOCK VALUE</th>
-                            <th>LOCATION</th>
-                            <th>RESTOCKED</th>
-                        </tr>
+                    <table className="hidden md:table w-full">
+                        <thead>
+                            <tr className="bg-blue-50 border border-secondary/10 text-left">
+                                <th className="ps-4">PRODUCT</th>
+                                <th>STATUS</th>
+                                <th>STOCK</th>
+                                <th>REORDER AT</th>
+                                <th>REORDER QTY</th>
+                                <th>UNIT COST</th>
+                                <th>STOCK VALUE</th>
+                                <th>LOCATION</th>
+                                <th>RESTOCKED</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="ps-4">Coke</td>
+                                <td>OK</td>
+                                <td>25</td>
+                                <td>test</td>
+                                <td>test</td>
+                                <td>25</td>
+                                <td>155</td>
+                                <td>Philippines</td>
+                                <td>May 3</td>
+                            </tr>
+                        </tbody>
                     </table>
 
                     {/* mobile */}
@@ -102,6 +117,11 @@ export const Inventory = () => {
                                 <div className="w-32 bg-light font-bold p-2">{table}</div>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Receive Stock Modal */}
+                    <div className="fixed inset-0 flex flex-col items-end justify-start animate-right-fade-in bg-black/50 backdrop-blur-xs">
+
                     </div>
                 </div>
 

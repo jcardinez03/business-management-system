@@ -25,3 +25,11 @@ export const getBusiness = async (id) => {
 
     return data
 }
+
+export const getProducts = async (id) => {
+    const response = await fetch(`http://localhost:8000/api/products/${id}/get`, {
+        credentials:"include"
+    });
+    const data = await response.json();
+    return data
+}

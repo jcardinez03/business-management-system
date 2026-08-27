@@ -1,6 +1,6 @@
 import { BusinessNavbar } from "@/pages/business/BusinessNavbar";
 import { Pricing } from "@/pages/business/Pricing";
-import { getBusiness, getCategories } from "../functions/getters";
+import { getBusiness, getCategories, getProducts } from "../functions/getters";
 import { useEffect, useState } from "react";
 import { useParams, Outlet } from "react-router-dom";
 export const BusinessLayout = () => {
@@ -8,13 +8,13 @@ export const BusinessLayout = () => {
 
     const [business, setBusiness] = useState({});
     const [categories, setCategories] = useState([]);
-
+    const [products, setProducts] = useState([]);
+    const [productCategory, setProductCategory] = useState([]);
     
     useEffect(() => {
         const fetchCategories = async () => {
             const data = await getCategories(id);
             setCategories(data);
-            
         }
 
         const fetchBusiness = async () => {
@@ -22,8 +22,15 @@ export const BusinessLayout = () => {
             setBusiness(data);
         }
 
+        const fetchProducts = async () => {
+            const data = await getProducts(id);
+            setProducts(data.all_products);
+            setProductCategory(data.category_name)
+        }
+
         fetchCategories();
-        fetchBusiness()
+        fetchBusiness();
+        fetchProducts();
     }, [id]);
 
     return (
@@ -33,7 +40,7 @@ export const BusinessLayout = () => {
                 <BusinessNavbar />
             </div>
             <div className="flex-1 min-h-screen w-full">
-                <Outlet context={{ business, categories }}/>
+                <Outlet context={{ business, categories, products, productCategory, setProducts, setProductCategory }}/>
             </div>
         </div>
 
