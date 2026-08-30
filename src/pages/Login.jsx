@@ -5,6 +5,7 @@ import { Briefcase, User, Lock } from "lucide-react";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../axios";
 
 export const Login = () => {
     const [loginForm, setLoginForm] = useState({
@@ -42,41 +43,23 @@ export const Login = () => {
         if (!validateForm()) {
             return;
         }
+        try {
+            await api.get('/sanctum/csrf-cookie');
 
-        
+            const response = await api.post('/api/login', loginForm);
 
-        await fetch('http://localhost:8000/sanctum/csrf-cookie', {
-            credentials: 'include'
-        });
+            const data = response.data;
 
-        const xsrfToken = decodeURIComponent(
-            document.cookie
-                .split("; ")
-                .find(row => row.startsWith("XSRF-TOKEN="))
-                ?.split("=")[1] || ""
-        );
+            setMessage(data.message);
 
-        const response = await fetch('http://localhost:8000/api/login', {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-type": "application/json",
-                "X-XSRF-TOKEN": xsrfToken
-            },
-            body: JSON.stringify(loginForm)
-        });
+            setTimeout(() => {
+                navigate('/index');
+            }, 1000);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            setErrors(data.message);
-            return;
+        } catch (error) {
+            console.error(error);
+            setErrors(error.response?.data?.message || "Login failed.");
         }
-        setMessage(data.message);
-
-        setTimeout(() => {
-            navigate('/index');
-        }, 1000);
     }
     return (
         <>
@@ -141,9 +124,6 @@ export const Login = () => {
         </>
     )
 }
-
-
-
 
 
 export default Login;

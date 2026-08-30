@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { getXSRFToken } from "../functions/csrf";
 import { getProducts } from "../functions/getters";
 import { useOutletContext } from "react-router-dom";
-
+import api from "@/axios.js";
 
 const tables = ['PRODUCT', 'COST', 'PRICE', 'MARGIN', 'VS COMP', 'ACTIVE'];
 export const Pricing = () => {
@@ -96,23 +96,13 @@ export const Pricing = () => {
 
 
         try {
-            await fetch("http://localhost:8000/sanctum/csrf-cookie", {
-                credentials: "include"
-            });
+            await api.get("/sanctum/csrf-cookie");
 
             const xsrfToken = getXSRFToken();
 
-            const response = await fetch(`http://localhost:8000/api/products/${product_id}/status`, {
-                method: "PATCH",
-                credentials: "include",
-                headers: {
-                    "Content-type": "application/json",
-                    "X-XSRF-TOKEN": xsrfToken
-                },
-                body: JSON.stringify({
+            const response = await api.patch(`/api/products/${product_id}/status`, {
                     is_active: newStatus
-                })
-            });
+                });
 
             const data = await response.json();
 
@@ -136,23 +126,12 @@ export const Pricing = () => {
 
 
         try {
-            await fetch('http://localhost:8000/sanctum/csrf-cookie', {
-                credentials: 'include'
-            });
+            await api.get('/sanctum/csrf-cookie')
 
-            const xsrfToken = getXSRFToken();
+            const response = await api.post(`/api/products/${id}/store`, productForm);
 
-            const response = await fetch(`http://localhost:8000/api/products/${id}/store`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-type": "application/json",
-                    "X-XSRF-TOKEN": xsrfToken
-                },
-                body: JSON.stringify(productForm)
-            })
-
-            const data = await response.json();
+            const data = response.data
+            ;
             setModalMessage(data.message);
 
             const updatedProducts = await getProducts(id);
@@ -222,21 +201,11 @@ export const Pricing = () => {
         }
 
         try {
-            await fetch('http://localhost:8000/sanctum/csrf-cookie', {
-                credentials: 'include'
-            });
+            await api.get('/sanctum/csrf-cookie');
 
             const xsrfToken = getXSRFToken();
 
-            const response = await fetch(`http://localhost:8000/api/products/${showProduct.id}/update`, {
-                method: "PATCH",
-                credentials: "include",
-                headers: {
-                    "Content-type": "application/json",
-                    "X-XSRF-TOKEN": xsrfToken
-                },
-                body: JSON.stringify(updateForm)
-            });
+            const response = await api.patch(`/api/products/${showProduct.id}/update`, updateForm);
 
             if (!response.ok) {
                 throw new Error('Failed to update product.');
@@ -310,20 +279,11 @@ export const Pricing = () => {
 
 
         try {
-            await fetch('http://localhost:8000/sanctum/csrf-cookie', {
-                credentials: 'include'
-            });
+            await api.get('/sanctum/csrf-cookie')
 
             const xsrfToken = getXSRFToken();
 
-            const response = await fetch(`http://localhost:8000/api/products/${showProduct.id}/destroy`, {
-                method: "DELETE",
-                credentials: "include",
-                headers: {
-                    "Content-type": "application/json",
-                    "X-XSRF-TOKEN": xsrfToken
-                }
-            });
+            const response = await api.delete(`/api/products/${showProduct.id}/destroy`)
 
         } catch (error) {
             console.error(error);

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { RegisterUser } from "@/pages/register/RegisterUser";
 import { RegisterBusiness } from "@/pages/register/RegisterBusiness";
 import { RegisterPlan } from "@/pages/register/RegisterPlan";
+import api from "../axios";
 const steps = [
     { number: 1, label: "Account" },
     { number: 2, label: "Business" },
@@ -35,9 +36,7 @@ export const Register = () => {
             return;
         }
 
-        await fetch('http://localhost:8000/sanctum/csrf-cookie', {
-            credentials: 'include'
-        });
+        await api.get('/sanctum/csrf-cookie');
 
 
         const xsrfToken = decodeURIComponent(
@@ -47,15 +46,7 @@ export const Register = () => {
                 ?.split("=")[1] || ""
         );
 
-        const response = await fetch("http://localhost:8000/api/register", {
-            method: "POST",
-            credentials:"include",
-            headers: {
-                "Content-Type": "application/json",
-                "X-XSRF-TOKEN": xsrfToken
-            },
-            body: JSON.stringify(registerForm)
-        });
+        const response = await api.post("/api/register", registerForm);
 
         const data = await response.json();
 
@@ -87,7 +78,7 @@ export const Register = () => {
     const [businessTypes, setBusinessTypes] = useState([])
 
     const getBusinessTypes = async () => {
-        const response = await fetch('http://localhost:8000/api/business-types/get')
+        const response = await fetch('/api/business-types/get')
         const data = await response.json();
 
         setBusinessTypes(data);

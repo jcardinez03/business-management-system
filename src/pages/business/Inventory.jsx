@@ -84,23 +84,10 @@ export const Inventory = () => {
         }, 2000);
 
         try {
-            await fetch("http://localhost:8000/sanctum/csrf-cookie", {
-                credentials: "include",
-            });
+            await api.get("/sanctum/csrf-cookie");
             const xsrfToken = getXSRFToken();
 
-            const response = await fetch(
-                `http://localhost:8000/api/inventories/store`,
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-type": "application/json",
-                        "X-XSRF-TOKEN": xsrfToken,
-                    },
-                    body: JSON.stringify(inventoryForm),
-                },
-            );
+            const response = await api.post(`/api/inventories/store`, inventoryForm)
 
             setInventoryForm({
                 product_id: "",

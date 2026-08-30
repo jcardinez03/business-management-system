@@ -32,15 +32,8 @@ export const Categories = () => {
 
         const XSRFToken = getXSRFToken();
 
-        const response = await fetch(`http://localhost:8000/api/categories/${id}/store`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-type": "application/json",
-                "X-XSRF-TOKEN": XSRFToken
-            },
-            body: JSON.stringify(addCategory)
-        });
+        const response = await api.post(`/api/categories/${id}/store`, addCategory)
+    
 
         const data = await response.json();
 

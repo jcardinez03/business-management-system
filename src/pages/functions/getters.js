@@ -1,53 +1,33 @@
+import api from "@/axios.js";
 // Categories
 export const getCategories = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/categories/${id}/get`, {
-        credentials: "include"
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.get(`/api/categories/${id}/get`);
+    return response.data
 }
 
 export const getBusinesses = async () => {
-    const response = await fetch('http://localhost:8000/api/businesses/get', {
-        credentials: "include"
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.get('/api/businesses/get');
+    return response.data
 }
 
 export const getBusiness = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/business/${id}/get`, {
-        credentials:"include"
-    });
-    const data = await response.json();
-
-    return data
+    const response = await api.get(`/api/business/${id}/get`);
+    return response.data
 }
 
 export const getProducts = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/products/${id}/get`, {
-        credentials:"include"
-    });
-    const data = await response.json();
-    return data
+    const response = await api.get(`/api/products/${id}/get`);
+    return response.data
 }
 
 export const getLocations = async (id) => {
-    const response = await fetch(`http://localhost:8000/api/locations/${id}/get`, {
-        credentials:"include"
-    });
+    const response = await api.get(`/api/locations/${id}/get`);
 
-    const data = await response.json();
-    return data;
+    return response.data
 }
 
 export const getInventories = async () => {
-    const response = await fetch(`http://localhost:8000/api/inventories/get`, {
-        credentials:"include"
-    });
+    const response = await api.get(`/api/inventories/get`);
 
-    const data = await response.json();
-    return data;
+    return response.data
 }

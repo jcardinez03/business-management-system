@@ -61,14 +61,7 @@ export const BusinessNavbar = () => {
 
         const xsrfToken = getXSRFToken();
 
-        const response = await fetch('http://localhost:8000/api/logout', {
-            method:"POST",
-            credentials:"include",
-            headers: {
-                "Content-type": "application/json",
-                "X-XSRF-TOKEN" : xsrfToken
-            }
-        });
+        const response = await api.post('api/logout');
 
         const data = await response.json()
 
