@@ -1,4 +1,4 @@
-import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck } from "lucide-react";
+import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck, LogOut } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getXSRFToken } from "../functions/csrf";
@@ -12,37 +12,44 @@ export const BusinessNavbar = () => {
         {
             icon: LayoutGrid,
             title: "Dashboard",
-            link: `/business/${id}/dashboard`
+            link: `/business/${id}/dashboard`,
+            status: 'disabled'
         },
         {
             icon: Box,
             title: "Inventory",
-            link: `/business/${id}/inventory`
+            link: `/business/${id}/inventory`,
+            status: 'active'
         },
         {
             icon: Tag,
             title: "Pricing",
-            link: `/business/${id}/pricing`
+            link: `/business/${id}/pricing`,
+            status: 'active'
         },
         {
             icon: Calculator,
             title: "Cost Calculator",
-            link: `/business/${id}/cost-calculation`
+            link: `/business/${id}/cost-calculation`,
+            status: 'disabled'
         },
         {
             icon: ChartLine,
             title: "Sales",
-            link: `/business/${id}/sales`
+            link: `/business/${id}/sales`,
+            status: 'disabled'
         },
         {
             icon: Users,
             title: "Customers",
-            link: `/business/${id}/customers`
+            link: `/business/${id}/customers`,
+            status: 'disabled'
         },
         {
             icon: ListCheck,
             title: "Categories",
-            link: `/business/${id}/categories`
+            link: `/business/${id}/categories`,
+            status: 'disabled'
         }
     ]
 
@@ -78,7 +85,7 @@ export const BusinessNavbar = () => {
         setIsClicked((prev) => !prev);
     }
     return (
-        <div className="w-full md:min-h-screen overflow-auto bg-dark text-light">
+        <div className="w-full md:flex md:flex-col md:min-h-screen overflow-auto bg-dark text-light">
             <div className="flex items-center gap-1 p-5">
                 <Briefcase size={25} />
                 <div className="flex flex-col">
@@ -87,9 +94,6 @@ export const BusinessNavbar = () => {
                     <p className="text-xs text-light/40">Pro Edition</p>
                 </div>
 
-                <div className="ml-auto">
-                    <p className="text-danger">Logout</p>
-                </div>
 
                 <div className="md:hidden ml-auto relative" onClick={handleIsClicked}>
                     <Menu />
@@ -97,7 +101,7 @@ export const BusinessNavbar = () => {
 
             </div>
             <div className="bg-light h-px" />
-            <div className="hidden md:block">
+            <div className="hidden md:flex md:flex-col md:flex-1">
                 <div className="px-7 pt-6">
                     <p className="text-xs text-light/40 font-bold">MAIN</p>
                 </div>
@@ -107,8 +111,13 @@ export const BusinessNavbar = () => {
                         const Icon = nav.icon
                         return (
                             <div className="px-3 my-2" key={idx}>
-                                <NavLink to={nav.link} className={({ isActive }) =>
-                                    isActive ?
+                                <NavLink to={nav.link} onClick={(e) => {
+                                    if(nav.status === "disabled"){
+                                        e.preventDefault();
+                                    }
+                                }} className={({ isActive }) => 
+                                    nav.status === "disabled" ? "flex items-center gap-4 px-4 py-4 w-full opacity-40 cursor-not-allowed"
+                                    : isActive ?
                                         "flex items-center gap-4 px-4 py-4 w-full bg-light text-secondary rounded-xl" :
                                         "flex items-center gap-4 px-4 py-4 w-full hover:bg-light hover:rounded-xl hover:text-secondary"}>
                                     <Icon size={35} />
@@ -119,6 +128,15 @@ export const BusinessNavbar = () => {
                     })}
                 </div>
 
+                <div className="h-px bg-light mt-auto" />
+                
+                <div className="px-6 cursor-pointer">
+                    <h2>USERNAME</h2>
+                    <div className="flex flex-row justify-between">
+                    <p className="text-danger">Logout</p>
+                    <LogOut />
+                    </div>
+                </div>
             </div>
 
             {/* mobile menu */}

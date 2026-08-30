@@ -1,4 +1,3 @@
-
 export const Input = ({type, className, placeholder, value, onChange, icon}) => {
 
     const baseClasses = "border-0 focus:outline-0 w-full p-2"

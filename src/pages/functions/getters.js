@@ -33,3 +33,21 @@ export const getProducts = async (id) => {
     const data = await response.json();
     return data
 }
+
+export const getLocations = async (id) => {
+    const response = await fetch(`http://localhost:8000/api/locations/${id}/get`, {
+        credentials:"include"
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export const getInventories = async () => {
+    const response = await fetch(`http://localhost:8000/api/inventories/get`, {
+        credentials:"include"
+    });
+
+    const data = await response.json();
+    return data;
+}

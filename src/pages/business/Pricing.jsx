@@ -44,9 +44,9 @@ export const Pricing = () => {
     const [panelMessage, setPanelMessage] = useState("")
     const [modalMessage, setModalMessage] = useState("")
     const [showProductPanel, setShowProductPanel] = useState(false);
-
-
-
+    const [search, setSearch] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    console.log(selectedCategory);
     // pagination
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -78,26 +78,26 @@ export const Pricing = () => {
     // ACTIVE/INACTIVE BUTTON
 
     const handleToggleActive = async (product_id) => {
-        
+
         const selectedProduct = products.find((product) =>
             product.id === product_id
         );
 
         const newStatus = selectedProduct.is_active === 1 ? 2 : 1;
 
-        setProducts((prev)=>
-            prev.map((product)=>
+        setProducts((prev) =>
+            prev.map((product) =>
                 product.id === product_id
-                ? {...product, is_active: newStatus}
-                : product
+                    ? { ...product, is_active: newStatus }
+                    : product
             )
         )
 
-      
+
 
         try {
             await fetch("http://localhost:8000/sanctum/csrf-cookie", {
-                credentials:"include"
+                credentials: "include"
             });
 
             const xsrfToken = getXSRFToken();
@@ -117,7 +117,7 @@ export const Pricing = () => {
             const data = await response.json();
 
             console.log(data);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
     }
@@ -125,7 +125,7 @@ export const Pricing = () => {
     // insert Product
     const handleProductForm = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
@@ -158,7 +158,14 @@ export const Pricing = () => {
             const updatedProducts = await getProducts(id);
             setProducts(updatedProducts.all_products);
             setProductCategory(updatedProducts.category_name);
-
+            setProductForm({
+                name: "",
+                category_id: "",
+                cost: "",
+                selling_price: "",
+                competitor_price: "",
+                is_active: ""
+            });
 
         } catch (error) {
             console.error(error);
@@ -328,14 +335,6 @@ export const Pricing = () => {
         product => product.is_active === 1
     ).length;
 
-    products.forEach((product) => {
-        console.log(
-            product.id,
-            product.selling_price,
-            product.competitor_price,
-            product.selling_price < product.competitor_price
-        );
-    })
     return (
         <div className="flex flex-col md:flex-row items-center min-h-screen w-full overflow-x-hidden relative">
             <div className="flex-1 min-h-screen w-full min-w-0">
@@ -376,9 +375,19 @@ export const Pricing = () => {
                 <div className="flex flex-col md:flex-row">
                     <div className="flex-2 my-6">
                         <div className="rounded-t-md border border-black/10 flex flex-col md:flex-row p-2 mx-6 bg-light">
+                            <div>
+                                <input
+                                    type="search"
+                                    name="search"
+                                    id="seach"
+                                    placeholder="Search product..."
+                                    className="px-2 py-1 text-xs border border-black/5 rounded-sm bg-dark/5"
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </div>
+                                <div className={selectedCategory==="All" ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={(e) => setSelectedCategory("All")}>All</div>
                             {categories.map((category, index) => (
-                                <div key={category.id} className="hidden md:block rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer">{category.name}</div>
-
+                                <div key={category.id} className={selectedCategory=== category.name ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={() => setSelectedCategory(category.name)}>{category.name}</div>
                             ))}
                         </div>
                         <div className="mx-6 my-1">
@@ -396,10 +405,11 @@ export const Pricing = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="border border-secondary/10 shadow-lg">
-                                    {currentProducts.map((product, index) => {
-                                        const categoryIndex = products.findIndex(
-                                            (item) => item.id === product.id
-                                        )
+                                    {currentProducts.filter((product) => 
+                                        (selectedCategory === "All" || 
+                                            product.category.name === selectedCategory) &&
+                                        product.name.toLowerCase().includes(search.toLowerCase()))
+                                    .map((product, index) => {
                                         let sellingPrice = product.selling_price;
                                         let cost = product.cost;
                                         let profit = sellingPrice - cost;
@@ -414,11 +424,11 @@ export const Pricing = () => {
                                                         <span className="text-secondary/70 text-xs">{product.SKU}</span>
                                                     </div>
                                                 </td>
-                                                <td className="">{productCategory[categoryIndex]}</td>
-                                                <td>₱ {product.cost}</td>
-                                                <td className="font-bold">₱ {product.selling_price}</td>
-                                                <td>{margin.toFixed(2)} %</td>
-                                                <td>
+                                                <td className="">{product.category.name}</td>
+                                                <td className="jetbrains-mono">₱ {product.cost}</td>
+                                                <td className="font-bold jetbrains-mono">₱ {product.selling_price}</td>
+                                                <td className="jetbrains-mono">{margin.toFixed(2)} %</td>
+                                                <td className="jetbrains-mono">
                                                     {product.competitor_price !== null
                                                         ? `${vsComp.toFixed(2)}%`
                                                         : "N/A"
@@ -492,7 +502,7 @@ export const Pricing = () => {
 
                                         <div className="flex flex-row mt-3">
                                             <p className="text-secondary/80">Base Cost</p>
-                                            <p className="ml-auto">
+                                            <p className="ml-auto jetbrains-mono">
                                                 ₱ {showProduct.cost}
                                             </p>
 
@@ -503,14 +513,14 @@ export const Pricing = () => {
 
                                         <div className="flex flex-row">
                                             <p className="text-secondary/80">Competitor Price</p>
-                                            <p className="ml-auto">
+                                            <p className="ml-auto jetbrains-mono">
                                                 ₱ {showProduct.competitor_price}
                                             </p>
                                         </div>
 
                                         <div className="flex flex row mt-3">
                                             <p className="text-secondary/80">Your price</p>
-                                            <p className="ml-auto">
+                                            <p className="ml-auto jetbrains-mono">
                                                 ₱ <input type="number" onChange={(e) => {
                                                     const newProduct = {
                                                         ...showProduct,
@@ -588,15 +598,15 @@ export const Pricing = () => {
             {
                 isModalOpen &&
                 <div className="fixed inset-0 flex flex-col items-end justify-start animate-right-fade-in bg-black/50 backdrop-blur-xs" onClick={() => setIsModalOpen(false)}>
-                    <div className="w-full max-w-xl border border-black/10 bg-light" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex flex-row items-center px-6 py-3">
+                    <div className="w-full max-w-xl border border-black/10 bg-light h-screen flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex flex-row items-center px-6 pt-3 pb-1">
                             <h4 className="text-xl font-bold">Add Product</h4>
                             <X className="ml-auto cursor-pointer" onClick={handleIsModalOpen} />
                         </div>
                         <p className="text-xs text-secondary/70 px-6 font-semibold">Set pricing details for the new product</p>
-                        <div className="h-px bg-secondary/20 "></div>
+                        <div className="h-px bg-secondary/20"></div>
                         <p className="text-xs text-secondary/70 font-semibold mx-6 mt-4">PRODUCT INFO</p>
-                        <form onSubmit={handleProductForm}>
+                        <form onSubmit={handleProductForm} className="flex flex-col flex-1">
                             <div className="flex flex-col mx-6 mt-4">
                                 <label htmlFor="productName" className="font-semibold text-xs text-secondary">Product Name</label>
                                 <input type="text" placeholder="eg. Victus Omen 16" className="outline outline-black/30 rounded-sm mt-2 py-1 px-4" onChange={(e) => {
@@ -654,7 +664,7 @@ export const Pricing = () => {
                             <div className="grid grid-cols-2 mx-6 gap-2">
                                 <div>
                                     <label htmlFor="pricing" className="font-semibold text-xs text-secondary">Base Cost</label>
-                                    <input type="number" placeholder="₱20.00" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
+                                    <input type="number" placeholder="₱20.00" step="" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
                                         setProductForm({
                                             ...productForm,
                                             cost: e.target.value
@@ -668,7 +678,7 @@ export const Pricing = () => {
                                 </div>
                                 <div>
                                     <label htmlFor="pricing" className="font-semibold text-xs text-secondary">Selling Price</label>
-                                    <input type="number" placeholder="₱20.00" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
+                                    <input type="number" placeholder="₱20.00" step="any" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
                                         setProductForm({
                                             ...productForm,
                                             selling_price: e.target.value
@@ -684,7 +694,7 @@ export const Pricing = () => {
                             </div>
                             <div className="mx-6">
                                 <label htmlFor="pricing" className="font-semibold text-xs text-secondary">Competitor Price (optional)</label>
-                                <input type="number" placeholder="₱20.00" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
+                                <input type="number" placeholder="₱20.00" step="any" className="outline outline-black/30 rounded-sm mt-2 h-8 py-1 px-4 text-xs w-full" onChange={(e) => {
                                     setProductForm({
                                         ...productForm,
                                         competitor_price: e.target.value
@@ -693,7 +703,9 @@ export const Pricing = () => {
                                 } />
                             </div>
 
-                            <div className="mx-6 my-6 flex flex-col md:flex-row gap-2">
+                            <div className="h-px bg-secondary/40 mt-auto"></div>
+
+                            <div className="mx-6 my-3 flex flex-col md:flex-row gap-2">
                                 <Button size="sm" type="submit" className="w-full" onClick={handleProductForm}>Add Product</Button>
                                 <button type="button" onClick={handleIsModalOpen} className="outline outline-secondary/70 rounded-lg py-1 px-3 hover:bg-secondary/70 hover:text-light">Cancel</button>
                             </div>
