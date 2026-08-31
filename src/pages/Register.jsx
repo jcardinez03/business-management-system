@@ -38,27 +38,23 @@ export const Register = () => {
 
         await api.get('/sanctum/csrf-cookie');
 
+        try {
+            const response = await api.post("/api/register", registerForm);
+    
+            const data = await response.data;
 
-        const xsrfToken = decodeURIComponent(
-            document.cookie
-                .split("; ")
-                .find(row => row.startsWith("XSRF-TOKEN="))
-                ?.split("=")[1] || ""
-        );
+            setMessage(data.message);
 
-        const response = await api.post("/api/register", registerForm);
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            setErrors(data.errors);
-            return;
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+        } catch(error) {
+            if (error.response) {
+                setErrors(error.response.data.errors);
+            }
         }
-        setMessage(data.message);
 
-        setTimeout(() => {
-            navigate('/login');
-        }, 1000);
+
     }
     // STEP
     const [currentStep, setCurrentStep] = useState(1);
