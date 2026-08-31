@@ -78,7 +78,7 @@ export const Register = () => {
     const [businessTypes, setBusinessTypes] = useState([])
 
     const getBusinessTypes = async () => {
-        const response = await fetch('/api/business-types/get')
+        const response = await api.get('/api/business-types/get')
         const data = await response.json();
 
         setBusinessTypes(data);
