@@ -31,6 +31,17 @@ export const Register = () => {
     const navigate = useNavigate();
     const handleRegisterForm = async (e) => {
         e.preventDefault();
+Search Kredo I.T. Abroad
+
+
+
+
+1
+
+2
+2
+
+
 
         if (!validateForm()) {
             return;
@@ -41,7 +52,7 @@ export const Register = () => {
         try {
             const response = await api.post("/api/register", registerForm);
     
-            const data = await response.data;
+            const data = response.data;
 
             setMessage(data.message);
 
@@ -75,7 +86,7 @@ export const Register = () => {
 
     const getBusinessTypes = async () => {
         const response = await api.get('/api/business-types/get')
-        const data = await response.json();
+        const data = response.data;
 
         setBusinessTypes(data);
     }

@@ -100,7 +100,7 @@ export const Inventory = () => {
             const updatedInventory = await getInventories();
             setInventories(updatedInventory);
 
-            const data = await response.json();
+            const data = response.data;
             setModalMessage(data.message);
         } catch (error) {
             console.error(error);

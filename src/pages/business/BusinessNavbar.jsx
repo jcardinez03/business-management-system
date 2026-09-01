@@ -63,7 +63,7 @@ export const BusinessNavbar = () => {
 
         const response = await api.post('api/logout');
 
-        const data = await response.json()
+        const data =  response.data;
 
 
         setMessage(data.message);

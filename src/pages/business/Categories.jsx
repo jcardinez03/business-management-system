@@ -30,12 +30,10 @@ export const Categories = () => {
             return;
         }
 
-        const XSRFToken = getXSRFToken();
-
         const response = await api.post(`/api/categories/${id}/store`, addCategory)
     
 
-        const data = await response.json();
+        const data = response.data;
 
 
         setMessage(data.message)

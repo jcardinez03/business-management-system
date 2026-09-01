@@ -104,7 +104,7 @@ export const Pricing = () => {
                     is_active: newStatus
                 });
 
-            const data = await response.json();
+            const data = response.data;
 
             console.log(data);
         } catch (error) {
@@ -211,7 +211,7 @@ export const Pricing = () => {
                 throw new Error('Failed to update product.');
             }
 
-            const data = await response.json();
+            const data = response.data;
             setUpdateForm({
                 cost: "",
                 selling_price: "",
