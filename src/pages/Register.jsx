@@ -31,17 +31,6 @@ export const Register = () => {
     const navigate = useNavigate();
     const handleRegisterForm = async (e) => {
         e.preventDefault();
-Search Kredo I.T. Abroad
-
-
-
-
-1
-
-2
-2
-
-
 
         if (!validateForm()) {
             return;
