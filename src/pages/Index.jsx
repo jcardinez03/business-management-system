@@ -16,7 +16,7 @@ export const Index = () => {
 
         fetchBusinesses();
     }, []);
-
+console.log(businesses);
     return (
 
         <div className="flex flex-col md:flex-row">
