@@ -93,16 +93,10 @@ export const Pricing = () => {
             )
         )
 
-
-
         try {
-            await api.get("/sanctum/csrf-cookie");
-
-            const xsrfToken = getXSRFToken();
-
             const response = await api.patch(`/api/products/${product_id}/status`, {
-                    is_active: newStatus
-                });
+                is_active: newStatus
+            });
 
             const data = response.data;
 
@@ -120,23 +114,17 @@ export const Pricing = () => {
             return;
         }
 
-        setTimeout(() => {
-            setIsModalOpen(false)
-        }, 2000)
-
-
         try {
-            await api.get('/sanctum/csrf-cookie')
-
             const response = await api.post(`/api/products/${id}/store`, productForm);
 
-            const data = response.data
-            ;
-            setModalMessage(data.message);
+            setModalMessage(response.data.message);
 
             const updatedProducts = await getProducts(id);
+
             setProducts(updatedProducts.all_products);
+
             setProductCategory(updatedProducts.category_name);
+
             setProductForm({
                 name: "",
                 category_id: "",
@@ -146,10 +134,18 @@ export const Pricing = () => {
                 is_active: ""
             });
 
+            setTimeout(() => {
+                setIsModalOpen(false)
+            }, 2000);
+
         } catch (error) {
             console.error(error);
-        }
+            setErrors((prev) => ({
+                ...prev,
+                server: error.response?.data?.message || "Failed to insert the product"
+            }));
 
+        }
         setTimeout(() => {
             setModalMessage("")
         }, 5000);
@@ -201,23 +197,13 @@ export const Pricing = () => {
         }
 
         try {
-            await api.get('/sanctum/csrf-cookie');
-
-            const xsrfToken = getXSRFToken();
-
             const response = await api.patch(`/api/products/${showProduct.id}/update`, updateForm);
-
-            if (!response.ok) {
-                throw new Error('Failed to update product.');
-            }
-
-            const data = response.data;
             setUpdateForm({
                 cost: "",
                 selling_price: "",
                 competitor_price: ""
             });
-            setPanelMessage(data.message);
+            setPanelMessage(response.data.message);
             await getProducts();
         } catch (error) {
             console.error(error);
@@ -279,10 +265,6 @@ export const Pricing = () => {
 
 
         try {
-            await api.get('/sanctum/csrf-cookie')
-
-            const xsrfToken = getXSRFToken();
-
             const response = await api.delete(`/api/products/${showProduct.id}/destroy`)
 
         } catch (error) {
@@ -345,9 +327,9 @@ export const Pricing = () => {
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
                             </div>
-                                <div className={selectedCategory==="All" ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={(e) => setSelectedCategory("All")}>All</div>
+                            <div className={selectedCategory === "All" ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={(e) => setSelectedCategory("All")}>All</div>
                             {categories.map((category, index) => (
-                                <div key={category.id} className={selectedCategory=== category.name ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={() => setSelectedCategory(category.name)}>{category.name}</div>
+                                <div key={category.id} className={selectedCategory === category.name ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={() => setSelectedCategory(category.name)}>{category.name}</div>
                             ))}
                         </div>
                         <div className="mx-6 my-1">
@@ -365,47 +347,47 @@ export const Pricing = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="border border-secondary/10 shadow-lg">
-                                    {currentProducts.filter((product) => 
-                                        (selectedCategory === "All" || 
+                                    {currentProducts.filter((product) =>
+                                        (selectedCategory === "All" ||
                                             product.category.name === selectedCategory) &&
                                         product.name.toLowerCase().includes(search.toLowerCase()))
-                                    .map((product, index) => {
-                                        let sellingPrice = product.selling_price;
-                                        let cost = product.cost;
-                                        let profit = sellingPrice - cost;
-                                        let margin = (profit / sellingPrice) * 100;
-                                        let competitorPrice = product.competitor_price;
-                                        let vsComp = (sellingPrice - competitorPrice) / competitorPrice * 100;
-                                        return (
-                                            <tr key={product.id} onClick={() => handleShowProduct(product.id)} className="cursor-pointer text-left">
-                                                <td className="ps-4 py-2">
-                                                    <div className="flex flex-col text-start">
-                                                        <span className="font-bold">{product.name}</span>
-                                                        <span className="text-secondary/70 text-xs">{product.SKU}</span>
-                                                    </div>
-                                                </td>
-                                                <td className="">{product.category.name}</td>
-                                                <td className="jetbrains-mono">₱ {product.cost}</td>
-                                                <td className="font-bold jetbrains-mono">₱ {product.selling_price}</td>
-                                                <td className="jetbrains-mono">{margin.toFixed(2)} %</td>
-                                                <td className="jetbrains-mono">
-                                                    {product.competitor_price !== null
-                                                        ? `${vsComp.toFixed(2)}%`
-                                                        : "N/A"
-                                                    }
-                                                </td>
-                                                <td onClick={() => handleToggleActive(product.id)}>
-                                                    {product.is_active === 1
-                                                        ? <span className="text-success">Active</span>
-                                                        : <span className="text-danger">Inactive</span>
-                                                    }
-                                                </td>
-                                                <td>
+                                        .map((product, index) => {
+                                            let sellingPrice = product.selling_price;
+                                            let cost = product.cost;
+                                            let profit = sellingPrice - cost;
+                                            let margin = (profit / sellingPrice) * 100;
+                                            let competitorPrice = product.competitor_price;
+                                            let vsComp = (sellingPrice - competitorPrice) / competitorPrice * 100;
+                                            return (
+                                                <tr key={product.id} onClick={() => handleShowProduct(product.id)} className="cursor-pointer text-left">
+                                                    <td className="ps-4 py-2">
+                                                        <div className="flex flex-col text-start">
+                                                            <span className="font-bold">{product.name}</span>
+                                                            <span className="text-secondary/70 text-xs">{product.SKU}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="">{product.category.name}</td>
+                                                    <td className="jetbrains-mono">₱ {product.cost}</td>
+                                                    <td className="font-bold jetbrains-mono">₱ {product.selling_price}</td>
+                                                    <td className="jetbrains-mono">{margin.toFixed(2)} %</td>
+                                                    <td className="jetbrains-mono">
+                                                        {product.competitor_price !== null
+                                                            ? `${vsComp.toFixed(2)}%`
+                                                            : "N/A"
+                                                        }
+                                                    </td>
+                                                    <td onClick={() => handleToggleActive(product.id)}>
+                                                        {product.is_active === 1
+                                                            ? <span className="text-success">Active</span>
+                                                            : <span className="text-danger">Inactive</span>
+                                                        }
+                                                    </td>
+                                                    <td>
 
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
                                 </tbody>
                             </table>
                             <div className="flex justify-center gap-2 mt-4">
@@ -502,6 +484,9 @@ export const Pricing = () => {
                                         </div>
                                         {errors.selling_price &&
                                             <p className="text-danger text-end animate-fade-in">{errors.selling_price}</p>
+                                        }
+                                        {errors.server &&
+                                            <p className="text-danger text-end animate-fade-in">{errors.server}</p>
                                         }
 
                                         <div className="text-left">

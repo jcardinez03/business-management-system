@@ -35,9 +35,6 @@ export const Register = () => {
         if (!validateForm()) {
             return;
         }
-
-        await api.get('/sanctum/csrf-cookie');
-
         try {
             const response = await api.post("/api/register", registerForm);
     

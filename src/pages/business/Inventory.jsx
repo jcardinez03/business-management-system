@@ -10,7 +10,7 @@ import {
 } from "../functions/getters";
 import { useParams } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
-import { getXSRFToken } from "../functions/csrf";
+import api from "../../axios";
 
 const tables = [
     "PRODUCT",
@@ -84,9 +84,6 @@ export const Inventory = () => {
         }, 2000);
 
         try {
-            await api.get("/sanctum/csrf-cookie");
-            const xsrfToken = getXSRFToken();
-
             const response = await api.post(`/api/inventories/store`, inventoryForm)
 
             setInventoryForm({
@@ -100,8 +97,7 @@ export const Inventory = () => {
             const updatedInventory = await getInventories();
             setInventories(updatedInventory);
 
-            const data = response.data;
-            setModalMessage(data.message);
+            setModalMessage(response.data.message);
         } catch (error) {
             console.error(error);
         }

@@ -43,12 +43,13 @@ export const Login = () => {
         if (!validateForm()) {
             return;
         }
+        
         try {
-            await api.get('/sanctum/csrf-cookie');
-
             const response = await api.post('/api/login', loginForm);
 
             const data = response.data;
+
+            localStorage.setItem('token', data.token);
 
             setMessage(data.message);
 

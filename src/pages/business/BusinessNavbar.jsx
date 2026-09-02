@@ -1,4 +1,4 @@
-import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck, LogOut } from "lucide-react";
+import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck, LogOut, MonitorCheck } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getXSRFToken } from "../functions/csrf";
@@ -25,6 +25,12 @@ export const BusinessNavbar = () => {
             icon: Tag,
             title: "Pricing",
             link: `/business/${id}/pricing`,
+            status: 'active'
+        },
+        {
+            icon: MonitorCheck,
+            title: "Point of Sales",
+            link: `/business/${id}/point-of-sales`,
             status: 'active'
         },
         {
@@ -59,15 +65,17 @@ export const BusinessNavbar = () => {
     const handleLogout = async (e) => {
         e.preventDefault();
 
-        const xsrfToken = getXSRFToken();
+        try {
+            const response = await api.post('api/logout');
 
-        const response = await api.post('api/logout');
+            setMessage(response.data.message);
 
-        const data =  response.data;
-
-
-        setMessage(data.message);
-        navigate('/login');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            localStorage.removeItem('token');
+            navigate('/login');
+        }
     }
 
     const handleIsActive = () => {
@@ -105,14 +113,14 @@ export const BusinessNavbar = () => {
                         return (
                             <div className="px-3 my-2" key={idx}>
                                 <NavLink to={nav.link} onClick={(e) => {
-                                    if(nav.status === "disabled"){
+                                    if (nav.status === "disabled") {
                                         e.preventDefault();
                                     }
-                                }} className={({ isActive }) => 
+                                }} className={({ isActive }) =>
                                     nav.status === "disabled" ? "flex items-center gap-4 px-4 py-4 w-full opacity-40 cursor-not-allowed"
-                                    : isActive ?
-                                        "flex items-center gap-4 px-4 py-4 w-full bg-light text-secondary rounded-xl" :
-                                        "flex items-center gap-4 px-4 py-4 w-full hover:bg-light hover:rounded-xl hover:text-secondary"}>
+                                        : isActive ?
+                                            "flex items-center gap-4 px-4 py-4 w-full bg-light text-secondary rounded-xl" :
+                                            "flex items-center gap-4 px-4 py-4 w-full hover:bg-light hover:rounded-xl hover:text-secondary"}>
                                     <Icon size={35} />
                                     <p className="text-xl">{nav.title}</p>
                                 </NavLink>
@@ -122,12 +130,12 @@ export const BusinessNavbar = () => {
                 </div>
 
                 <div className="h-px bg-light mt-auto" />
-                
+
                 <div className="px-6 cursor-pointer">
                     <h2>USERNAME</h2>
-                    <div className="flex flex-row justify-between">
-                    <p className="text-danger">Logout</p>
-                    <LogOut />
+                    <div className="flex flex-row justify-between" onClick={() => handleLogout()}>
+                        <p className="text-danger">Logout</p>
+                        <LogOut />
                     </div>
                 </div>
             </div>
