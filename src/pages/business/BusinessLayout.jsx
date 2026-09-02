@@ -11,7 +11,7 @@ export const BusinessLayout = () => {
     const [products, setProducts] = useState([]);
     const [inventories, setInventories] = useState([]);
     const [productCategory, setProductCategory] = useState([]);
-    console.log(inventories);
+    
     useEffect(() => {
         const fetchCategories = async () => {
             const data = await getCategories(id);

@@ -1,7 +1,6 @@
 import { Stepper } from "../components/Stepper";
 import { Navbar } from "../layout/Navbar";
-import { Button } from "@/components/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { RegisterUser } from "@/pages/register/RegisterUser";
 import { RegisterBusiness } from "@/pages/register/RegisterBusiness";
