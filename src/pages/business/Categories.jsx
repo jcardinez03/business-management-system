@@ -1,8 +1,7 @@
 import { useOutletContext, useParams } from "react-router-dom";
 import { Plus, SquarePen, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { getXSRFToken } from "../functions/csrf";
-
+import api from "../../axios";
 export const Categories = () => {
     const { business, categories } = useOutletContext();
     const { id } = useParams();
