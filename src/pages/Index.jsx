@@ -13,7 +13,6 @@ export const Index = () => {
             setBusinesses(data);
         }
 
-
         fetchBusinesses();
     }, []);
 console.log(businesses);

@@ -55,7 +55,7 @@ export const BusinessNavbar = () => {
             icon: ListCheck,
             title: "Categories",
             link: `/business/${id}/categories`,
-            status: 'disabled'
+            status: 'active'
         }
     ]
 

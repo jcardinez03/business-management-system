@@ -6,8 +6,12 @@ export const getCategories = async (id) => {
 }
 
 export const getBusinesses = async () => {
-    const response = await api.get('/api/businesses/get');
-    return response.data
+    try{
+        const response = await api.get('/api/businesses/get');
+        return response.data
+    } catch(error) {
+        console.error(error);
+    }
 }
 
 export const getBusiness = async (id) => {
