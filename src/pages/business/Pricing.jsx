@@ -1,8 +1,7 @@
 import { Button } from "@/components/Button";
-import { Plus, X, Check, Trash } from "lucide-react";
+import { Plus, X, Check, Trash, ChevronDown, StepBack, StepForward } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getXSRFToken } from "../functions/csrf";
 import { getProducts } from "../functions/getters";
 import { useOutletContext } from "react-router-dom";
 import api from "@/axios.js";
@@ -46,7 +45,7 @@ export const Pricing = () => {
     const [showProductPanel, setShowProductPanel] = useState(false);
     const [search, setSearch] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
-    console.log(selectedCategory);
+
     // pagination
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -57,6 +56,14 @@ export const Pricing = () => {
     const currentProducts = products.slice(firstIndex, lastIndex);
 
     const totalPages = Math.ceil(products.length / itemsPerPage);
+
+
+    // mobile category
+    const [isMobileCategoryOpen, setIsMobileCategoryOpen] = useState(false);
+
+    const handleSetIsMobileCategoryOpen = () => {
+        setIsMobileCategoryOpen((prev) => !prev);
+    }
 
     const handleShowProduct = (product_id) => {
         let selectedProduct = products.find(
@@ -316,7 +323,7 @@ export const Pricing = () => {
 
                 <div className="flex flex-col md:flex-row">
                     <div className="flex-2 my-6">
-                        <div className="rounded-t-md border border-black/10 flex flex-col md:flex-row p-2 mx-6 bg-light">
+                        <div className="rounded-t-md border border-black/10 flex md:flex-row p-2 mx-6 bg-light">
                             <div>
                                 <input
                                     type="search"
@@ -327,75 +334,111 @@ export const Pricing = () => {
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
                             </div>
-                            <div className={selectedCategory === "All" ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={(e) => setSelectedCategory("All")}>All</div>
+                            <div className={`${selectedCategory === "All" ? 'hidden w-fit md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 ml-1 text-xs cursor-pointer hover:bg-blue-900' : 'hidden w-fit md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 ml-1 text-xs text-dark/70 cursor-pointer hover:bg-dark/30'}`} onClick={(e) => setSelectedCategory("All")}>
+                                <div className="flex flex-row items-center gap-2">All</div>
+                            </div>
                             {categories.map((category, index) => (
-                                <div key={category.id} className={selectedCategory === category.name ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900` : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`} onClick={() => setSelectedCategory(category.name)}>{category.name}</div>
+                                <div key={category.id} className={`${index !== 0 ? 'hidden md:flex' : 'flex'}
+                                ${selectedCategory === category.name ?
+                                        'hidden w-fit md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 text-xs cursor-pointer hover:bg-blue-900 ml-1'
+                                        : 'hidden w-fit md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 ml-1 text-xs text-dark/70 cursor-pointer hover:bg-dark/30'}`}
+                                    onClick={() => setSelectedCategory(category.name)}>{category.name}</div>
                             ))}
+                            {/* mobile categories */}
+                            <div>
+                                <div className="w-fit flex md:hidden items-center justify-center rounded-md bg-dark/10 px-2 py-1 ml-1 text-xs text-dark/70 cursor-pointer hover:bg-dark/30 gap-1 relative" onClick={handleSetIsMobileCategoryOpen}>{selectedCategory} <ChevronDown size={20} /></div>
+
+                                {/* mobile category dropdown */}
+                                {isMobileCategoryOpen &&
+                                    <div className="ml-1 mt-1 absolute">
+                                        <div className="text-xs text-dark py-1 px-2 bg-gray-300 border border-dark/10"
+                                            onClick={() => {
+                                                setSelectedCategory("All");
+
+                                                setIsMobileCategoryOpen(false);
+                                            }}>All</div>
+                                        {categories.map((category) => (
+                                            <div className="text-xs text-dark py-1 px-2 bg-gray-300 border border-dark/10" key={category.id}
+                                                onClick={() => {
+                                                    setSelectedCategory(category.name)
+
+                                                    setIsMobileCategoryOpen(false);
+                                                }}>
+                                                {category.name}
+                                            </div>
+                                        ))
+                                        }
+                                    </div>
+                                }
+                            </div>
+
                         </div>
                         <div className="mx-6 my-1">
-                            <table className="w-full hidden md:table text-center">
-                                <thead>
-                                    <tr className="bg-blue-50 border border-secondary/10 text-left">
-                                        <th className="ps-4">PRODUCT</th>
-                                        <th>CATEGORY</th>
-                                        <th>COST</th>
-                                        <th>PRICE</th>
-                                        <th>MARGIN</th>
-                                        <th>VS COMP</th>
-                                        <th>ACTIVE</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody className="border border-secondary/10 shadow-lg">
-                                    {currentProducts.filter((product) =>
-                                        (selectedCategory === "All" ||
-                                            product.category.name === selectedCategory) &&
-                                        product.name.toLowerCase().includes(search.toLowerCase()))
-                                        .map((product, index) => {
-                                            let sellingPrice = product.selling_price;
-                                            let cost = product.cost;
-                                            let profit = sellingPrice - cost;
-                                            let margin = (profit / sellingPrice) * 100;
-                                            let competitorPrice = product.competitor_price;
-                                            let vsComp = (sellingPrice - competitorPrice) / competitorPrice * 100;
-                                            return (
-                                                <tr key={product.id} onClick={() => handleShowProduct(product.id)} className="cursor-pointer text-left">
-                                                    <td className="ps-4 py-2">
-                                                        <div className="flex flex-col text-start">
-                                                            <span className="font-bold">{product.name}</span>
-                                                            <span className="text-secondary/70 text-xs">{product.SKU}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="">{product.category.name}</td>
-                                                    <td className="jetbrains-mono">₱ {product.cost}</td>
-                                                    <td className="font-bold jetbrains-mono">₱ {product.selling_price}</td>
-                                                    <td className="jetbrains-mono">{margin.toFixed(2)} %</td>
-                                                    <td className="jetbrains-mono">
-                                                        {product.competitor_price !== null
-                                                            ? `${vsComp.toFixed(2)}%`
-                                                            : "N/A"
-                                                        }
-                                                    </td>
-                                                    <td onClick={() => handleToggleActive(product.id)}>
-                                                        {product.is_active === 1
-                                                            ? <span className="text-success">Active</span>
-                                                            : <span className="text-danger">Inactive</span>
-                                                        }
-                                                    </td>
-                                                    <td>
+                            <div className=" h-125 overflow-y-auto">
+                                <table className="w-full md:table text-center">
+                                    <thead>
+                                        <tr className="bg-blue-50 border border-secondary/10 text-left">
+                                            <th className="ps-4">PRODUCT</th>
+                                            <th className="hidden md:table-cell">CATEGORY</th>
+                                            <th>COST</th>
+                                            <th>PRICE</th>
+                                            <th className="hidden md:table-cell">MARGIN</th>
+                                            <th className="hidden md:table-cell">VS COMP</th>
+                                            <th className="hidden md:table-cell">ACTIVE</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="border border-secondary/10 shadow-lg">
+                                        {currentProducts.filter((product) =>
+                                            (selectedCategory === "All" ||
+                                                product.category.name === selectedCategory) &&
+                                            product.name.toLowerCase().includes(search.toLowerCase()))
+                                            .map((product, index) => {
+                                                let sellingPrice = product.selling_price;
+                                                let cost = product.cost;
+                                                let profit = sellingPrice - cost;
+                                                let margin = (profit / sellingPrice) * 100;
+                                                let competitorPrice = product.competitor_price;
+                                                let vsComp = (sellingPrice - competitorPrice) / competitorPrice * 100;
+                                                return (
+                                                    <tr key={product.id} onClick={() => handleShowProduct(product.id)} className="cursor-pointer text-left">
+                                                        <td className="ps-4">
+                                                            <div className="flex flex-col text-start">
+                                                                <span className="font-bold">{product.name}</span>
+                                                                <span className="text-secondary/70 text-xs">{product.SKU}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="hidden md:table-cell">{product.category.name}</td>
+                                                        <td className="jetbrains-mono">₱ {product.cost}</td>
+                                                        <td className="font-bold jetbrains-mono">₱ {product.selling_price}</td>
+                                                        <td className="jetbrains-mono hidden md:table-cell">{margin.toFixed(2)} %</td>
+                                                        <td className="jetbrains-mono hidden md:table-cell">
+                                                            {product.competitor_price !== null
+                                                                ? `${vsComp.toFixed(2)}%`
+                                                                : "N/A"
+                                                            }
+                                                        </td>
+                                                        <td onClick={() => handleToggleActive(product.id)} className="hidden md:table-cell">
+                                                            {product.is_active === 1
+                                                                ? <span className="text-success">Active</span>
+                                                                : <span className="text-danger">Inactive</span>
+                                                            }
+                                                        </td>
+                                                        <td>
 
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
-                                </tbody>
-                            </table>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className="flex justify-center gap-2 mt-4">
                                 <button
                                     disabled={currentPage === 1}
                                     onClick={() => setCurrentPage(currentPage - 1)}
                                 >
-                                    Previous
+                                    <StepBack className="text-primary" />
                                 </button>
 
                                 <span>
@@ -406,20 +449,8 @@ export const Pricing = () => {
                                     disabled={currentPage === totalPages}
                                     onClick={() => setCurrentPage(currentPage + 1)}
                                 >
-                                    Next
+                                    <StepForward className="text-primary" />
                                 </button>
-                            </div>
-
-                            {/* mobile cards*/}
-                            <div className="border-t-0">
-                                {tables.map((table, index) => (
-                                    <div key={index} className="flex flex-row md:hidden">
-                                        <div className="bg-blue-50 w-32" key={index}>{table}</div>
-                                        <div>
-                                            PRODUCT 1
-                                        </div>
-                                    </div>
-                                ))}
                             </div>
                         </div>
                     </div>

@@ -30,8 +30,8 @@ export const getLocations = async (id) => {
     return response.data
 }
 
-export const getInventories = async () => {
-    const response = await api.get(`/api/inventories/get`);
+export const getInventories = async (id) => {
+    const response = await api.get(`/api/inventories/${id}/get`);
 
     return response.data
 }

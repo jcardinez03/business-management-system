@@ -19,7 +19,7 @@ export const BusinessNavbar = () => {
             icon: Box,
             title: "Inventory",
             link: `/business/${id}/inventory`,
-            status: 'active'
+            status: 'disabled'
         },
         {
             icon: Tag,
@@ -31,7 +31,7 @@ export const BusinessNavbar = () => {
             icon: MonitorCheck,
             title: "Point of Sales",
             link: `/business/${id}/point-of-sales`,
-            status: 'active'
+            status: 'disabled'
         },
         {
             icon: Calculator,
@@ -61,6 +61,7 @@ export const BusinessNavbar = () => {
 
     const [isClicked, setIsClicked] = useState(false);
     const [isActive, setIsActive] = useState(false);
+    console.log(isClicked);
 
     const handleLogout = async (e) => {
         e.preventDefault();
@@ -142,20 +143,25 @@ export const BusinessNavbar = () => {
 
             {/* mobile menu */}
             {isClicked &&
-                <div className="animate-fade-in absolute glass w-full py-3 px-1">
-                    {dashboardNav.map((nav, idx) => {
-                        const Icon = nav.icon
-                        return (
-                            <div className="px-3" key={idx}>
-                                <NavLink to={nav.link}>
-                                    <div className="p-2 text-2xl flex gap-5 items-center" type="button">
-                                        <Icon size={35} />
-                                        <p className="text-xl">{nav.title}</p>
+                <div className="fixed inset-0 z-10 pt-20" onClick={() => setIsClicked(false)}>
+                    <div className="animate-fade-in absolute z-10 glass w-full py-3 px-1" onClick={(e) => e.stopPropagation()}>
+                        {dashboardNav.filter((nav) =>
+                            nav.status !== "disabled")
+                            .map((nav, idx) => {
+                                const Icon = nav.icon
+                                return (
+                                    <div className="px-3" key={idx}>
+                                        <NavLink to={nav.link} onClick={()=>setIsClicked(false)}>
+                                            <div className="p-2 text-2xl flex gap-5 items-center" type="button">
+                                                <Icon size={35} />
+                                                <p className="text-xl">{nav.title}</p>
+                                            </div>
+                                        </NavLink>
                                     </div>
-                                </NavLink>
-                            </div>
-                        )
-                    })}
+                                )
+                            }
+                            )}
+                    </div>
                 </div>
             }
         </div>

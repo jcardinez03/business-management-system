@@ -30,7 +30,7 @@ export const BusinessLayout = () => {
         }
 
         const fetchInventories = async () => {
-            const data = await getInventories();
+            const data = await getInventories(id);
             setInventories(data);
         }
 

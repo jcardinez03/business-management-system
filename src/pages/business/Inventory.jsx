@@ -11,6 +11,8 @@ import {
 import { useParams } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import api from "../../axios";
+import { StepBack, StepForward } from "lucide-react";
+
 
 const tables = [
     "PRODUCT",
@@ -44,7 +46,20 @@ export const Inventory = () => {
     const [search, setSearch] = useState("");
     const [errors, setErrors] = useState({});
     const [selectedCategory, setSelectedCategory] = useState("All");
-    console.log(selectedCategory);
+
+    // PAGINATION
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    const lastIndex = currentPage * itemsPerPage;
+    const firstIndex = lastIndex - itemsPerPage;
+
+    const currentProducts = products.slice(firstIndex, lastIndex);
+
+    const totalPages = Math.ceil(products.length / itemsPerPage);
+
+
+    // SHOW INVENTORY
     const handleShowInventory = (productId) => {
         const inventory = inventories.find(
             (inventory) => inventory.product_id === productId,
@@ -252,7 +267,7 @@ export const Inventory = () => {
                                             ? `hidden md:flex items-center justify-center rounded-md bg-blue-600 text-white px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-blue-900`
                                             : `hidden md:flex items-center justify-center rounded-md bg-dark/10 px-3 py-1 mx-2 text-xs text-dark/70 cursor-pointer hover:bg-dark/30`
                                     }
-                                    onClick={()=>setSelectedCategory(category.name)}
+                                    onClick={() => setSelectedCategory(category.name)}
                                 >
                                     {category.name}
                                 </div>
@@ -279,102 +294,114 @@ export const Inventory = () => {
                         </div>
                     )}
                 </div>
-                <div className="mx-5 border border-t-0 border-black/10">
-                    <table className="hidden md:table w-full">
-                        <thead>
-                            <tr className="bg-blue-50 border border-secondary/10 text-center">
-                                <th className="ps-4 text-left">PRODUCT</th>
-                                <th>STATUS</th>
-                                <th>STOCK</th>
-                                <th>REORDER AT</th>
-                                <th>REORDER QTY</th>
-                                <th>UNIT COST</th>
-                                <th>STOCK VALUE</th>
-                                <th>LOCATION</th>
-                                <th>RESTOCKED</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                             {inventories.filter((inventory) =>
-                                    (selectedCategory === "All" || 
+                <div className="mx-5">
+                    <div className="h-125 overflow-y-auto">
+                        <table className="w-full h-100 border border-t-0 border-black/10">
+                            <thead>
+                                <tr className="bg-blue-50 border border-secondary/10 text-center">
+                                    <th className="ps-4 text-left">PRODUCT</th>
+                                    <th>STATUS</th>
+                                    <th>STOCK</th>
+                                    <th>REORDER AT</th>
+                                    <th>REORDER QTY</th>
+                                    <th>UNIT COST</th>
+                                    <th>STOCK VALUE</th>
+                                    <th>LOCATION</th>
+                                    <th>RESTOCKED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {inventories.filter((inventory) =>
+                                    (selectedCategory === "All" ||
                                         inventory.product.category.name === selectedCategory
                                     ) &&
                                     inventory.product.name.toLowerCase().includes(search.toLowerCase())
                                 ).map((inventory) => {
-                                return (
-                                <tr key={inventory.id} className="text-center">
-                                    <td className="ps-4 text-left">
-                                        <div className="flex flex-col">
-                                            <p>{inventory.product.name}</p>
-                                            <p className="text-xs text-gray-500">
-                                                {inventory.product.SKU}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {((inventory.stock - inventory.reorder_at) /
-                                            inventory.reorder_at) *
-                                            100 >=
-                                            50 ? (
-                                            <p className="text-success font-bold text-xs w-17 rounded-md bg-success/10 mx-auto">
-                                                OK
-                                            </p>
-                                        ) : ((inventory.stock - inventory.reorder_at) /
-                                            inventory.reorder_at) *
-                                            100 <=
-                                            50 &&
-                                            ((inventory.stock - inventory.reorder_at) /
-                                                inventory.reorder_at) *
-                                            100 >=
-                                            30 ? (
-                                            <p className="text-warning font-bold text-xs w-17 rounded-md bg-warning/10 mx-auto">
-                                                Low
-                                            </p>
-                                        ) : (
-                                            <p className="text-danger font-bold text-xs w-17 rounded-md bg-danger/10 mx-auto">
-                                                Critical
-                                            </p>
-                                        )}
-                                    </td>
-                                    <td className="jetbrains-mono">{inventory.stock}</td>
-                                    <td className="jetbrains-mono">{inventory.reorder_at}</td>
-                                    <td className="jetbrains-mono">{inventory.reorder_qty}</td>
-                                    <td className="jetbrains-mono">
-                                        ₱ {Number(inventory.product.cost).toFixed(2)}
-                                    </td>
-                                    <td className="jetbrains-mono">
-                                        ₱ {(inventory.product.cost * inventory.stock).toFixed(2)}
-                                    </td>
-                                    <td>
-                                        {inventory.location_id ? inventory.location_id : "N/A"}
-                                    </td>
-                                    <td className="text-xs text-gray-400">
-                                        {new Date(inventory.last_restocked_at).toLocaleDateString(
-                                            "en-US",
-                                            {
-                                                month: "short",
-                                                day: "numeric",
-                                                year: "numeric",
-                                            },
-                                        )}
-                                    </td>
-                                </tr>
+                                    return (
+                                        <tr key={inventory.id} className="text-center">
+                                            <td className="ps-4 text-left">
+                                                <div className="flex flex-col">
+                                                    <p>{inventory.product.name}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {inventory.product.SKU}
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {((inventory.stock - inventory.reorder_at) /
+                                                    inventory.reorder_at) *
+                                                    100 >=
+                                                    50 ? (
+                                                    <p className="text-success font-bold text-xs w-17 rounded-md bg-success/10 mx-auto">
+                                                        OK
+                                                    </p>
+                                                ) : ((inventory.stock - inventory.reorder_at) /
+                                                    inventory.reorder_at) *
+                                                    100 <=
+                                                    50 &&
+                                                    ((inventory.stock - inventory.reorder_at) /
+                                                        inventory.reorder_at) *
+                                                    100 >=
+                                                    30 ? (
+                                                    <p className="text-warning font-bold text-xs w-17 rounded-md bg-warning/10 mx-auto">
+                                                        Low
+                                                    </p>
+                                                ) : (
+                                                    <p className="text-danger font-bold text-xs w-17 rounded-md bg-danger/10 mx-auto">
+                                                        Critical
+                                                    </p>
+                                                )}
+                                            </td>
+                                            <td className="jetbrains-mono">{inventory.stock}</td>
+                                            <td className="jetbrains-mono">{inventory.reorder_at}</td>
+                                            <td className="jetbrains-mono">{inventory.reorder_qty}</td>
+                                            <td className="jetbrains-mono">
+                                                ₱ {Number(inventory.product.cost).toFixed(2)}
+                                            </td>
+                                            <td className="jetbrains-mono">
+                                                ₱ {(inventory.product.cost * inventory.stock).toFixed(2)}
+                                            </td>
+                                            <td>
+                                                {inventory.location_id ? inventory.location_id : "N/A"}
+                                            </td>
+                                            <td className="text-xs text-gray-400">
+                                                {new Date(inventory.last_restocked_at).toLocaleDateString(
+                                                    "en-US",
+                                                    {
+                                                        month: "short",
+                                                        day: "numeric",
+                                                        year: "numeric",
+                                                    },
+                                                )}
+                                            </td>
+                                        </tr>
+                                    )
+                                }
                                 )
-                            }
-                            )
-                            }
-                        </tbody>
-                    </table>
-
-                    {/* mobile */}
-                    <div className="flex flex-col md:hidden ">
-                        {tables.map((table, idx) => (
-                            <div key={idx} className="flex flex-row items-center">
-                                <div className="w-32 bg-light font-bold p-2">{table}</div>
-                            </div>
-                        ))}
+                                }
+                            </tbody>
+                        </table>
                     </div>
+                    {/* PAGINATION */}
+                    <div className="flex justify-center gap-2 mt-4">
+                        <button
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                        >
+                            <StepBack className="text-primary" />
+                        </button>
 
+                        <span>
+                            {currentPage} / {totalPages}
+                        </span>
+
+                        <button
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                        >
+                            <StepForward className="text-primary" />
+                        </button>
+                    </div>
                     {/* Receive Stock Modal */}
                     {isModalOpen && (
                         <div
@@ -432,11 +459,11 @@ export const Inventory = () => {
                                                 Choose product
                                             </option>
                                             {products.map((product) => (
-                                                <>
-                                                    <option value={product.id} key={product.id}>
-                                                        {product.name}
-                                                    </option>
-                                                </>
+
+                                                <option value={product.id} key={product.id}>
+                                                    {product.name}
+                                                </option>
+
                                             ))}
                                         </select>
                                         {errors.product_id &&
@@ -507,7 +534,7 @@ export const Inventory = () => {
                                                 name="warehouse"
                                                 id="warehouse"
                                                 className="outline outline-secondary/40 hover:outline hover:outline-blue-600 rounded-sm w-full px-2 py-1"
-                                                value={inventoryForm.location_id}
+                                                value={inventoryForm.location}
                                             >
                                                 <option value="" hidden>
                                                     Select location
