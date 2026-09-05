@@ -109,7 +109,7 @@ export const Inventory = () => {
                 last_restocked_at: "",
             });
 
-            const updatedInventory = await getInventories();
+            const updatedInventory = await getInventories(id);
             setInventories(updatedInventory);
 
             setModalMessage(response.data.message);
