@@ -1,11 +1,11 @@
 import { Briefcase, Menu, LayoutGrid, Calculator, Tag, Box, ChartLine, Users, ListCheck, LogOut, MonitorCheck } from "lucide-react";
 import { useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-import { getXSRFToken } from "../functions/csrf";
-
-
+import { useAuth } from "../../context/AuthContext";
 
 export const BusinessNavbar = () => {
+    const { user } = useAuth();
+
     const { id } = useParams();
     const navigate = useNavigate();
     const dashboardNav = [
@@ -19,7 +19,7 @@ export const BusinessNavbar = () => {
             icon: Box,
             title: "Inventory",
             link: `/business/${id}/inventory`,
-            status: 'disabled'
+            status: 'active'
         },
         {
             icon: Tag,
@@ -133,9 +133,9 @@ export const BusinessNavbar = () => {
                 <div className="h-px bg-light mt-auto" />
 
                 <div className="px-6 cursor-pointer">
-                    <h2>USERNAME</h2>
-                    <div className="flex flex-row justify-between" onClick={() => handleLogout()}>
-                        <p className="text-danger">Logout</p>
+                    <h2>{user.name}</h2>
+                    <div className="flex flex-row gap-4" onClick={(e) => handleLogout(e.target.value)}>
+                        <p className="">Logout</p>
                         <LogOut />
                     </div>
                 </div>

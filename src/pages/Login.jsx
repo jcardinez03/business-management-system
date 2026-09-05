@@ -6,8 +6,11 @@ import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../axios";
+import { useAuth } from "../context/AuthContext";
 
 export const Login = () => {
+    const { setUser } = useAuth();
+
     const [loginForm, setLoginForm] = useState({
         email: "",
         password: ""
@@ -48,14 +51,18 @@ export const Login = () => {
             const response = await api.post('/api/login', loginForm);
 
             const data = response.data;
+            
+            setUser(data.user);
 
             localStorage.setItem('token', data.token);
-
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
             setMessage(data.message);
 
             setTimeout(() => {
                 navigate('/index');
             }, 1000);
+
 
         } catch (error) {
             console.error(error);
@@ -84,16 +91,16 @@ export const Login = () => {
                                 })}></Input>
                             </div>
                             {errors.email && (
-                                <p>Email Address cannot be empty.</p>
+                                <p class="text-danger text-xs">Email Address cannot be empty.</p>
                             )}
-                            <div className="mt-3">
+                            <div className="mt-3 mb-3">
                                 <Input placeholder="Password" value={loginForm.password} type="password" icon={Lock} onChange={(e) => setLoginForm({
                                     ...loginForm,
                                     password: e.target.value
                                 })}></Input>
                             </div>
                             {errors.password && (
-                                <p>Password cannot be empty.</p>
+                                <p className="text-danger text-xs">Password cannot be empty.</p>
                             )}
                             <div className="mt-6">
 
@@ -108,10 +115,10 @@ export const Login = () => {
                             <div className="h-px bg-gray-300 flex-1"></div>
                         </div>
                         <div className="mt-6 flex items-center gap-4">
-                            <div className="rounded border border-black/50 flex-1 p-3 flex items-center gap-3 justify-center">
+                            <div className="rounded border border-black/50 flex-1 p-3 flex items-center gap-3 justify-center line-through">
                                 Google <FaGoogle size={15} />
                             </div>
-                            <div className="rounded border border-black/50 flex-1 p-3 flex items-center gap-3 justify-center">
+                            <div className="rounded border border-black/50 flex-1 p-3 flex items-center gap-3 justify-center line-through">
                                 Facebook <FaFacebook size={15} />
                             </div>
                         </div>

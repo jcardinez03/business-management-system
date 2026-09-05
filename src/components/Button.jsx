@@ -10,6 +10,7 @@ export const Button = ({className, size="default", children, color="blue", onCli
     const colorClasses = {
         white: "bg-blue-50 text-primary",
         blue: "bg-primary text-primary-foreground",
+        yellow: "bg-yellow-500 text-dark",
         default: "shadow"
     }
 

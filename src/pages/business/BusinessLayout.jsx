@@ -47,7 +47,7 @@ export const BusinessLayout = () => {
                 <BusinessNavbar />
             </div>
             <div className="flex-1 min-h-screen w-full">
-                <Outlet context={{ business, categories, products, productCategory, setProducts, setProductCategory, inventories, setInventories }}/>
+                <Outlet context={{ business, categories, products, productCategory, setProducts, setProductCategory, inventories, setInventories, setCategories }}/>
             </div>
         </div>
 

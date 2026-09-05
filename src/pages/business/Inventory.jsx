@@ -48,7 +48,7 @@ export const Inventory = () => {
     const [selectedCategory, setSelectedCategory] = useState("All");
 
     // PAGINATION
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 10;
 
     const lastIndex = currentPage * itemsPerPage;

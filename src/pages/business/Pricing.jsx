@@ -269,8 +269,6 @@ export const Pricing = () => {
 
         setShowProductPanel(false);
 
-
-
         try {
             const response = await api.delete(`/api/products/${showProduct.id}/destroy`)
 
@@ -323,7 +321,7 @@ export const Pricing = () => {
 
                 <div className="flex flex-col md:flex-row">
                     <div className="flex-2 my-6">
-                        <div className="rounded-t-md border border-black/10 flex md:flex-row p-2 mx-6 bg-light">
+                        <div className="rounded-t-md border border-black/10 flex md:flex-row p-2 mx-5 md:me-1 bg-light">
                             <div>
                                 <input
                                     type="search"
@@ -373,8 +371,8 @@ export const Pricing = () => {
                             </div>
 
                         </div>
-                        <div className="mx-6 my-1">
-                            <div className=" h-125 overflow-y-auto">
+                        <div className="mx-5 md:me-1 my-1">
+                            <div className="h-125 overflow-y-auto">
                                 <table className="w-full md:table text-center">
                                     <thead>
                                         <tr className="bg-blue-50 border border-secondary/10 text-left">
@@ -561,7 +559,7 @@ export const Pricing = () => {
                             )
                             :
                             (
-                                <div className="rounded-xl border border-secondary/20 text-center p-10 me-5 ms-2">
+                                <div className="rounded-xl border border-secondary/20 text-center p-10 me-1">
                                     <p className="text-secondary/60">Select a product to view pricing details.</p>
                                 </div>
                             )
